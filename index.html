@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOURAKS</title>
+  <style>
+    /* ── Reset & Base ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      min-height: 100vh;
+    }
+
+    /* ── Header / Kouraks Counter ──────────────────────────────── */
+    .header {
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #58a6ff;
+      margin-right: 16px;
+    }
+    .kouraks-display {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex: 1;
+    }
+    #kouraks-count {
+      font-size: 32px;
+      font-weight: 700;
+      color: #f0f6fc;
+      font-variant-numeric: tabular-nums;
+    }
+    #kouraks-rate {
+      font-size: 16px;
+      color: #3fb950;
+      font-variant-numeric: tabular-nums;
+    }
+    .hardware-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #8b949e;
+    }
+    .hardware-info strong { color: #c9d1d9; }
+    #hardware-mult {
+      color: #d2a8ff;
+      font-weight: 600;
+    }
+    #hardware-upgrade-btn {
+      background: #238636;
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    #hardware-upgrade-btn:hover:not(:disabled) { background: #2ea043; }
+    #hardware-upgrade-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Main Layout ───────────────────────────────────────────── */
+    .main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      min-height: calc(100vh - 160px);
+    }
+
+    /* ── Panels ────────────────────────────────────────────────── */
+    .panel {
+      padding: 16px;
+      overflow-y: auto;
+    }
+    .panel:first-child {
+      border-right: 1px solid #30363d;
+    }
+    .panel-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #8b949e;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #21262d;
+    }
+
+    /* ── Project Cards ─────────────────────────────────────────── */
+    .project-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+      transition: border-color 0.15s;
+    }
+    .project-card:hover { border-color: #58a6ff; }
+    .project-card.locked {
+      opacity: 0.5;
+      border-color: #21262d;
+    }
+    .project-card.locked:hover { border-color: #21262d; }
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .project-name {
+      font-weight: 600;
+      color: #f0f6fc;
+    }
+    .project-yield {
+      font-size: 14px;
+      font-weight: 600;
+      color: #3fb950;
+      font-variant-numeric: tabular-nums;
+    }
+    .project-reqs {
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .req-badge {
+      font-size: 12px;
+      background: #21262d;
+      padding: 2px 8px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+    .project-desc {
+      font-size: 12px;
+      color: #8b949e;
+      font-style: italic;
+      margin-top: 6px;
+    }
+    .project-detail {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #21262d;
+    }
+    .detail-title {
+      font-size: 12px;
+      color: #8b949e;
+      margin-bottom: 4px;
+    }
+    .detail-empty {
+      font-size: 12px;
+      color: #484f58;
+      font-style: italic;
+    }
+    .assigned-service {
+      font-size: 13px;
+      padding: 2px 0;
+    }
+
+    /* ── Service Cards ─────────────────────────────────────────── */
+    .service-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+    .service-card.status-crashed { border-left: 3px solid #f85149; }
+    .service-card.status-degraded { border-left: 3px solid #d29922; }
+    .service-card.status-green { border-left: 3px solid #3fb950; }
+    .service-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .service-name {
+      font-weight: 600;
+      color: #f0f6fc;
+    }
+    .service-type-badge {
+      font-size: 11px;
+      background: #21262d;
+      color: #8b949e;
+      padding: 1px 6px;
+      border-radius: 10px;
+      margin-left: auto;
+    }
+    .service-assignment {
+      margin-top: 6px;
+    }
+    .service-assignment label {
+      font-size: 13px;
+      color: #8b949e;
+    }
+    .service-assignment select {
+      background: #0d1117;
+      color: #c9d1d9;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: 3px 6px;
+      font-size: 12px;
+      margin-left: 4px;
+    }
+    .service-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 6px;
+    }
+    .assigned-to {
+      font-size: 12px;
+      color: #8b949e;
+    }
+    .restart-timer {
+      font-size: 12px;
+      color: #d29922;
+    }
+
+    /* ── Buttons ────────────────────────────────────────────────── */
+    .btn {
+      border: none;
+      border-radius: 6px;
+      padding: 5px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-restart {
+      background: #da3633;
+      color: #fff;
+    }
+    .btn-restart:hover:not(:disabled) { background: #f85149; }
+    .btn-buy {
+      background: #238636;
+      color: #fff;
+    }
+    .btn-buy:hover:not(:disabled) { background: #2ea043; }
+    .btn-shop {
+      background: #1f6feb;
+      color: #fff;
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+    .btn-shop:hover { background: #388bfd; }
+    .btn-reset {
+      background: #21262d;
+      color: #8b949e;
+      font-size: 12px;
+      padding: 4px 10px;
+    }
+    .btn-reset:hover { background: #30363d; color: #c9d1d9; }
+
+    /* ── Shop Modal ────────────────────────────────────────────── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 24px;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f0f6fc;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: #8b949e;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+    .modal-close:hover { color: #f0f6fc; }
+
+    /* ── Shop Items ────────────────────────────────────────────── */
+    .shop-group {
+      margin-bottom: 16px;
+    }
+    .shop-group-title {
+      font-size: 14px;
+      color: #d2a8ff;
+      font-weight: 600;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #21262d;
+    }
+    .shop-item {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 6px;
+    }
+    .shop-item.locked {
+      opacity: 0.4;
+    }
+    .shop-item.too-expensive {
+      opacity: 0.7;
+    }
+    .shop-item-name {
+      font-weight: 600;
+      color: #f0f6fc;
+      font-size: 14px;
+    }
+    .shop-item-desc {
+      font-size: 12px;
+      color: #8b949e;
+      font-style: italic;
+      margin-top: 2px;
+    }
+    .shop-item-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+    }
+    .shop-cost {
+      color: #d29922;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    /* ── Event Log ─────────────────────────────────────────────── */
+    .log-panel {
+      background: #0d1117;
+      border-top: 1px solid #30363d;
+      padding: 12px 24px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .log-panel .panel-title {
+      margin-bottom: 8px;
+    }
+    .log-entry {
+      font-size: 13px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      color: #8b949e;
+      padding: 1px 0;
+      line-height: 1.5;
+    }
+    .empty-message {
+      font-size: 13px;
+      color: #484f58;
+      font-style: italic;
+      padding: 8px 0;
+    }
+
+    /* ── Footer ────────────────────────────────────────────────── */
+    .footer {
+      background: #161b22;
+      border-top: 1px solid #30363d;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #484f58;
+    }
+
+    /* ── Milestone Popup ───────────────────────────────────────── */
+    .milestone-popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: #1f6feb;
+      color: #fff;
+      padding: 16px 32px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      z-index: 200;
+      opacity: 0;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+      text-align: center;
+      max-width: 90%;
+      box-shadow: 0 4px 24px rgba(31,111,235,0.4);
+    }
+    .milestone-popup.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <span class="header-title">🖥 KOURAKS</span>
+    <div class="kouraks-display">
+      <span id="kouraks-count">0 K</span>
+      <span id="kouraks-rate">(+0 K/s)</span>
+    </div>
+    <div class="hardware-info">
+      Hardware : <strong id="hardware-name">Vieux Dell Reconditionnée</strong>
+      <span id="hardware-mult">×1.0</span>
+      <button id="hardware-upgrade-btn" onclick="upgradeHardware(); renderUI();">Upgrader</button>
+    </div>
+  </div>
+
+  <!-- Main Panels -->
+  <div class="main">
+    <!-- Projects Panel -->
+    <div class="panel">
+      <div class="panel-title">Projets en prod</div>
+      <div id="projects-list"></div>
+    </div>
+
+    <!-- Services Panel -->
+    <div class="panel">
+      <div class="panel-title">Services disponibles</div>
+      <div id="services-list"></div>
+      <button class="btn btn-shop" onclick="openShop();">🛒 Acheter un service</button>
+    </div>
+  </div>
+
+  <!-- Event Log -->
+  <div class="log-panel">
+    <div class="panel-title">Log système</div>
+    <div id="log-list"></div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>KOURAKS — Infrastructure absurde depuis 2019</span>
+    <button class="btn btn-reset" onclick="confirmReset();">Réinitialiser</button>
+  </div>
+
+  <!-- Shop Modal -->
+  <div class="modal-overlay" id="shop-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">🛒 Boutique de services</span>
+        <button class="modal-close" onclick="closeShop();">✕</button>
+      </div>
+      <div id="shop-content"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="game.js"></script>
+  <script src="ui.js"></script>
+  <script>
+    // Start the game when the page loads
+    window.addEventListener('DOMContentLoaded', startGame);
+  </script>
+
+</body>
+</html>
