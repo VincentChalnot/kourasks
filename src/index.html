@@ -393,6 +393,86 @@
       color: #484f58;
     }
 
+    /* ── Deploy Popup ──────────────────────────────────────────── */
+    .deploy-popup {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 520px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 24px;
+    }
+    .deploy-section {
+      margin-bottom: 14px;
+    }
+    .deploy-label {
+      font-size: 12px;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .deploy-value {
+      font-size: 14px;
+      color: #f0f6fc;
+    }
+    .deploy-price-row {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 14px;
+    }
+    .deploy-price-item {
+      flex: 1;
+    }
+    .deploy-price-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #d29922;
+      font-variant-numeric: tabular-nums;
+    }
+    .deploy-krate-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #3fb950;
+      font-variant-numeric: tabular-nums;
+    }
+    .deploy-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #21262d;
+    }
+    .btn-cancel {
+      background: #21262d;
+      color: #c9d1d9;
+    }
+    .btn-cancel:hover { background: #30363d; }
+    .btn-confirm {
+      background: #238636;
+      color: #fff;
+    }
+    .btn-confirm:hover:not(:disabled) { background: #2ea043; }
+    .deploy-select {
+      width: 100%;
+      background: #0d1117;
+      color: #c9d1d9;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: 6px 8px;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .deploy-desc {
+      font-size: 13px;
+      color: #8b949e;
+      font-style: italic;
+      line-height: 1.5;
+    }
+
     /* ── Milestone Popup ───────────────────────────────────────── */
     .milestone-popup {
       position: fixed;
@@ -446,42 +526,32 @@
     <div class="panel">
       <div class="panel-title">Projets en prod</div>
       <div id="projects-list">
-        <template x-for="leaf in config.leaves" :key="leaf.id">
-          <div class="project-card" :class="totalEarned < leaf.unlockAt ? 'locked' : ''">
-
-            <!-- Locked state -->
-            <div class="project-header" x-show="totalEarned < leaf.unlockAt">
-              <span class="project-name">🔒 ???</span>
-              <span class="project-yield" x-text="'Débloqué à ' + fmt(leaf.unlockAt) + ' K'"></span>
+        <div class="empty-message" x-show="unlockedLeaves.length === 0">Aucun projet disponible pour le moment.</div>
+        <template x-for="leaf in unlockedLeaves" :key="leaf.id">
+          <div class="project-card">
+            <div class="project-header" @click="toggleDetail(leaf.id)">
+              <span class="project-name" x-text="leaf.name"></span>
+              <span class="project-yield" x-text="fmt(computeLeafYield(leaf)) + ' K/s'"></span>
             </div>
-
-            <!-- Unlocked state -->
-            <div x-show="totalEarned >= leaf.unlockAt">
-              <div class="project-header" @click="toggleDetail(leaf.id)">
-                <span class="project-name" x-text="leaf.name"></span>
-                <span class="project-yield" x-text="fmt(computeLeafYield(leaf)) + ' K/s'"></span>
-              </div>
-              <div class="project-reqs">
-                <template x-for="reqType in leaf.requires" :key="reqType">
-                  <span class="req-badge"
-                        :title="typeLabel(reqType) + ': ' + reqStatus(leaf, reqType).label"
-                        x-text="reqStatus(leaf, reqType).icon + ' ' + typeLabel(reqType)">
-                  </span>
-                </template>
-              </div>
-              <div class="project-desc" x-text="leaf.description"></div>
-              <div class="project-detail" x-show="openDetails[leaf.id]">
-                <div class="detail-title">Services assignés :</div>
-                <div class="detail-empty" x-show="leafAssigned(leaf).length === 0">Aucun service assigné.</div>
-                <template x-for="svc in leafAssigned(leaf)" :key="svc.uid">
-                  <div class="assigned-service">
-                    <span x-text="statusIcon(svc.status) + ' ' + svc.name"></span>
-                    <span class="service-type-badge" x-text="typeLabel(svc.serviceType)"></span>
-                  </div>
-                </template>
-              </div>
+            <div class="project-reqs">
+              <template x-for="reqType in leaf.requires" :key="reqType">
+                <span class="req-badge"
+                      :title="typeLabel(reqType) + ': ' + reqStatus(leaf, reqType).label"
+                      x-text="reqStatus(leaf, reqType).icon + ' ' + typeLabel(reqType)">
+                </span>
+              </template>
             </div>
-
+            <div class="project-desc" x-text="leaf.description"></div>
+            <div class="project-detail" x-show="openDetails[leaf.id]">
+              <div class="detail-title">Services assignés :</div>
+              <div class="detail-empty" x-show="leafAssigned(leaf).length === 0">Aucun service assigné.</div>
+              <template x-for="svc in leafAssigned(leaf)" :key="svc.uid">
+                <div class="assigned-service">
+                  <span x-text="statusIcon(svc.status) + ' ' + svc.name"></span>
+                  <span class="service-type-badge" x-text="typeLabel(svc.serviceType)"></span>
+                </div>
+              </template>
+            </div>
           </div>
         </template>
       </div>
@@ -523,7 +593,7 @@
           </div>
         </template>
       </div>
-      <button class="btn btn-shop" @click="shopOpen = true">🛒 Acheter un service</button>
+      <button class="btn btn-shop" @click="shopOpen = true">🚀 Déployer un service</button>
     </div>
 
   </div>
@@ -548,37 +618,106 @@
   <div class="modal-overlay" x-show="shopOpen" x-cloak @click.self="shopOpen = false">
     <div class="modal">
       <div class="modal-header">
-        <span class="modal-title">🛒 Boutique de services</span>
+        <span class="modal-title">🚀 Marketplace de services</span>
         <button class="modal-close" @click="shopOpen = false">✕</button>
       </div>
       <div id="shop-content">
         <template x-for="group in shopGroups" :key="group.type">
-          <div class="shop-group">
+          <div class="shop-group" x-show="group.services.length > 0">
             <h3 class="shop-group-title" x-text="typeLabel(group.type)"></h3>
             <template x-for="svc in group.services" :key="svc.id">
               <div class="shop-item"
-                   :class="totalEarned < svc.unlockAt ? 'locked' : (kouraks < svc.buyCost ? 'too-expensive' : '')">
-                <!-- Locked -->
-                <div x-show="totalEarned < svc.unlockAt">
-                  <div class="shop-item-name" x-text="'🔒 ' + svc.name"></div>
-                  <div class="shop-item-info" x-text="'Débloqué à ' + fmt(svc.unlockAt) + ' K total'"></div>
-                </div>
-                <!-- Unlocked -->
-                <div x-show="totalEarned >= svc.unlockAt">
-                  <div class="shop-item-name" x-text="svc.name"></div>
-                  <div class="shop-item-desc" x-text="svc.description"></div>
-                  <div class="shop-item-info">
-                    <span class="shop-cost" x-text="fmt(svc.buyCost) + ' K'"></span>
-                    <button class="btn btn-buy"
-                            :disabled="kouraks < svc.buyCost"
-                            @click="buyService(svc.id)">Acheter</button>
-                  </div>
+                   :class="kouraks < svc.buyCost ? 'too-expensive' : ''">
+                <div class="shop-item-name" x-text="svc.name"></div>
+                <div class="shop-item-desc" x-text="svc.description"></div>
+                <div class="shop-item-info">
+                  <span class="shop-cost" x-text="fmt(svc.buyCost) + ' K'"></span>
+                  <button class="btn btn-buy"
+                          :disabled="kouraks < svc.buyCost"
+                          @click="openDeploy(svc.id)">Déployer</button>
                 </div>
               </div>
             </template>
           </div>
         </template>
       </div>
+    </div>
+  </div>
+
+  <!-- Deploy Configuration Popup -->
+  <div class="modal-overlay" x-show="deployOpen" x-cloak @click.self="cancelDeploy()">
+    <div class="deploy-popup" x-show="deployConfig">
+      <div class="modal-header">
+        <span class="modal-title">🚀 Déployer un service</span>
+        <button class="modal-close" @click="cancelDeploy()">✕</button>
+      </div>
+
+      <template x-if="deployConfig">
+        <div>
+          <!-- Service name & type -->
+          <div class="deploy-section">
+            <div class="deploy-label">Service</div>
+            <div class="deploy-value">
+              <strong x-text="deployConfig.name"></strong>
+              <span class="service-type-badge" x-text="typeLabel(deployConfig.serviceType)"></span>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="deploy-section">
+            <div class="deploy-label">Description</div>
+            <div class="deploy-desc" x-text="deployConfig.description"></div>
+          </div>
+
+          <!-- Pricing row -->
+          <div class="deploy-price-row">
+            <div class="deploy-price-item">
+              <div class="deploy-label">Prix fixe</div>
+              <div class="deploy-price-value" x-text="fmt(deployConfig.buyCost) + ' K'"></div>
+            </div>
+            <div class="deploy-price-item">
+              <div class="deploy-label">Coût récurrent</div>
+              <div class="deploy-price-value"
+                   x-text="deployConfig.recurringCost > 0 ? fmt(deployConfig.recurringCost) + ' K/s' : 'Gratuit'"></div>
+            </div>
+            <div class="deploy-price-item">
+              <div class="deploy-label">K/s potentiel</div>
+              <div class="deploy-krate-value"
+                   x-text="deployProjectId ? '+' + fmt(potentialYield(deployConfig, deployProjectId)) + ' K/s' : '—'"></div>
+            </div>
+          </div>
+
+          <!-- Project selection -->
+          <div class="deploy-section">
+            <div class="deploy-label">Assigner au projet</div>
+            <select class="deploy-select" x-model="deployProjectId">
+              <option value="">— Aucun projet —</option>
+              <template x-for="leaf in unlockedLeaves" :key="leaf.id">
+                <option :value="leaf.id" x-text="leaf.name"></option>
+              </template>
+            </select>
+          </div>
+
+          <!-- Hardware info -->
+          <div class="deploy-section">
+            <div class="deploy-label">Infrastructure hardware</div>
+            <div class="deploy-value">
+              <strong x-text="hardwareConfig.name"></strong>
+              <span style="color:#d2a8ff; margin-left:8px" x-text="'×' + hardwareConfig.multiplier"></span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="deploy-actions">
+            <button class="btn btn-cancel" @click="cancelDeploy()">Annuler</button>
+            <button class="btn btn-confirm"
+                    :disabled="kouraks < deployConfig.buyCost"
+                    @click="confirmDeploy()">
+              Confirmer le déploiement
+            </button>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 
@@ -617,6 +756,7 @@ services:
     serviceType: backend
     description: "Un framework. Personne ne sait pourquoi il tourne."
     buyCost: 0
+    recurringCost: 0
     crashRate: 0.003
     restartDuration: 8
     autoRestart: false
@@ -626,6 +766,7 @@ services:
     serviceType: backend
     description: "Un framework plus gros. Personne ne sait pourquoi il existe."
     buyCost: 800
+    recurringCost: 2
     crashRate: 0.002
     restartDuration: 8
     autoRestart: false
@@ -635,6 +776,7 @@ services:
     serviceType: backend
     description: "Un worker. Il travaille. Parfois."
     buyCost: 3500
+    recurringCost: 5
     crashRate: 0.004
     restartDuration: 8
     autoRestart: false
@@ -646,6 +788,7 @@ services:
     serviceType: database
     description: "Une base de données. Les données sont dedans. Normalement."
     buyCost: 0
+    recurringCost: 0
     crashRate: 0.002
     restartDuration: 8
     autoRestart: false
@@ -655,6 +798,7 @@ services:
     serviceType: database
     description: "Une base de données au chocolat. Personne ne sait ce que ça veut dire."
     buyCost: 1200
+    recurringCost: 3
     crashRate: 0.001
     restartDuration: 8
     autoRestart: false
@@ -666,6 +810,7 @@ services:
     serviceType: message-queue
     description: "Un cluster de messages. Ça sent le roquefort."
     buyCost: 600
+    recurringCost: 1
     crashRate: 0.005
     restartDuration: 8
     autoRestart: false
@@ -675,6 +820,7 @@ services:
     serviceType: message-queue
     description: "Une queue de messages. Elle fait la sieste."
     buyCost: 2000
+    recurringCost: 4
     crashRate: 0.003
     restartDuration: 8
     autoRestart: false
@@ -686,6 +832,7 @@ services:
     serviceType: cache
     description: "Un cache. Il oublie parfois."
     buyCost: 150
+    recurringCost: 0
     crashRate: 0.004
     restartDuration: 8
     autoRestart: false
@@ -695,6 +842,7 @@ services:
     serviceType: cache
     description: "Un cache qui limite. Quoi exactement. On ne sait pas."
     buyCost: 900
+    recurringCost: 2
     crashRate: 0.002
     restartDuration: 8
     autoRestart: false
@@ -706,6 +854,7 @@ services:
     serviceType: reverse-proxy
     description: "Un reverse proxy. Petit mais costaud. Enfin, petit."
     buyCost: 300
+    recurringCost: 1
     crashRate: 0.002
     restartDuration: 8
     autoRestart: false
@@ -715,6 +864,7 @@ services:
     serviceType: reverse-proxy
     description: "Un proxy inversé. Ou un inverse proxié. On ne sait plus."
     buyCost: 1800
+    recurringCost: 4
     crashRate: 0.001
     restartDuration: 8
     autoRestart: false
@@ -726,6 +876,7 @@ services:
     serviceType: search
     description: "Un moteur de recherche. Il cherche. Il ne trouve pas toujours."
     buyCost: 400
+    recurringCost: 1
     crashRate: 0.003
     restartDuration: 8
     autoRestart: false
@@ -735,6 +886,7 @@ services:
     serviceType: search
     description: "Un moteur de recherche au beurre. Indexation lente mais onctueuse."
     buyCost: 2500
+    recurringCost: 6
     crashRate: 0.002
     restartDuration: 8
     autoRestart: false
@@ -746,6 +898,7 @@ services:
     serviceType: iam
     description: "Une API d'authentification. La v1 a été perdue."
     buyCost: 700
+    recurringCost: 2
     crashRate: 0.002
     restartDuration: 8
     autoRestart: false
@@ -755,6 +908,7 @@ services:
     serviceType: iam
     description: "Un cluster d'identité. Personne ne sait qui est qui."
     buyCost: 4000
+    recurringCost: 8
     crashRate: 0.001
     restartDuration: 8
     autoRestart: false
@@ -766,6 +920,7 @@ services:
     serviceType: bundler
     description: "Un bundler. La v1 et la v2 sont en prod aussi."
     buyCost: 250
+    recurringCost: 1
     crashRate: 0.006
     restartDuration: 8
     autoRestart: false
@@ -775,6 +930,7 @@ services:
     serviceType: bundler
     description: "Un bundler en alpha. Depuis 3 ans."
     buyCost: 1500
+    recurringCost: 3
     crashRate: 0.008
     restartDuration: 8
     autoRestart: false
@@ -920,6 +1076,9 @@ serviceTypeLabels:
         _logCounter: 0,
         milestonesReached: [],
         shopOpen: false,
+        deployOpen: false,
+        deployConfig: null,
+        deployProjectId: '',
         // Pre-initialise all leaf detail toggles to false
         openDetails: Object.fromEntries(GAME_CONFIG.leaves.map(l => [l.id, false])),
 
@@ -950,6 +1109,7 @@ serviceTypeLabels:
         get shopGroups() {
           const groups = {};
           for (const svc of this.config.services) {
+            if (this.totalEarned < svc.unlockAt) continue;
             if (!groups[svc.serviceType]) groups[svc.serviceType] = [];
             groups[svc.serviceType].push(svc);
           }
@@ -968,15 +1128,20 @@ serviceTypeLabels:
         },
 
         // ── Yield calculation ────────────────────────────────────
+        // Returns the best (max) yieldMultiplier for each required service type.
+        // 0 means the type is unsatisfied (no service assigned or all crashed).
+        bestMultipliersPerType(leaf, services) {
+          return leaf.requires.map(type => {
+            const ofType = services.filter(s => s.serviceType === type);
+            return ofType.length ? Math.max(...ofType.map(s => s.yieldMultiplier)) : 0;
+          });
+        },
         computeLeafYield(leaf) {
           const hwMult = this.hardwareConfig.multiplier;
           const assigned = this.ownedServices.filter(s => s.assignedTo === leaf.id);
-          const allTypesSatisfied = leaf.requires.every(type =>
-            assigned.some(s => s.serviceType === type && s.status !== 'crashed')
-          );
-          if (!allTypesSatisfied) return 0;
-          const mults = assigned.map(s => s.yieldMultiplier);
-          return leaf.baseYield * hwMult * (mults.length ? Math.min(...mults) : 1.0);
+          const bestMults = this.bestMultipliersPerType(leaf, assigned);
+          if (bestMults.some(m => m === 0)) return 0;
+          return leaf.baseYield * hwMult * Math.min(...bestMults);
         },
         computeTotalRate() {
           return this.config.leaves
@@ -990,9 +1155,14 @@ serviceTypeLabels:
         },
         reqStatus(leaf, reqType) {
           const assigned = this.ownedServices.filter(s => s.assignedTo === leaf.id);
-          const match = assigned.find(s => s.serviceType === reqType);
-          if (!match) return { icon: '❓', label: 'manque' };
-          return { icon: this.statusIcon(match.status), label: match.name };
+          const ofType = assigned.filter(s => s.serviceType === reqType);
+          if (!ofType.length) return { icon: '❓', label: 'manque' };
+          // Show the best-status service of this type (green > degraded > crashed)
+          const best = ofType.reduce(
+            (a, b) => b.yieldMultiplier > a.yieldMultiplier ? b : a,
+            ofType[0]
+          );
+          return { icon: this.statusIcon(best.status), label: best.name };
         },
         toggleDetail(leafId) {
           // Spread into new object to ensure Alpine detects the change
@@ -1003,7 +1173,8 @@ serviceTypeLabels:
         gameTick() {
           this.processCrashes();
           const r = this.computeTotalRate();
-          this.kouraks += r;
+          const recurring = this.ownedServices.reduce((sum, svc) => sum + (svc.recurringCost || 0), 0);
+          this.kouraks += r - recurring;
           this.totalEarned += r;
           this.checkMilestones();
           // Alpine reactivity handles DOM updates automatically — no renderUI() call needed
@@ -1058,8 +1229,16 @@ serviceTypeLabels:
         },
 
         // ── Service management ───────────────────────────────────
-        buyService(configId) {
+        openDeploy(configId) {
           const cfg = this.config.services.find(s => s.id === configId);
+          if (!cfg) return;
+          this.deployConfig = cfg;
+          this.deployProjectId = '';
+          this.shopOpen = false;
+          this.deployOpen = true;
+        },
+        confirmDeploy() {
+          const cfg = this.deployConfig;
           if (!cfg || this.kouraks < cfg.buyCost || this.totalEarned < cfg.unlockAt) return;
           this.kouraks -= cfg.buyCost;
           this.ownedServices.push({
@@ -1068,14 +1247,37 @@ serviceTypeLabels:
             name: cfg.name,
             serviceType: cfg.serviceType,
             crashRate: cfg.crashRate,
+            recurringCost: cfg.recurringCost || 0,
             restartDuration: cfg.restartDuration,
             autoRestart: cfg.autoRestart,
             status: 'green',
-            assignedTo: '',   // empty string = unassigned; works with x-model on <select>
+            assignedTo: this.deployProjectId,
             yieldMultiplier: 1.0,
             restartTimer: 0,
           });
-          this.addLog(cfg.name + ' acheté et déployé.');
+          this.addLog(cfg.name + ' déployé.');
+          this.deployOpen = false;
+          this.deployConfig = null;
+          this.deployProjectId = '';
+        },
+        cancelDeploy() {
+          this.deployOpen = false;
+          this.deployConfig = null;
+          this.deployProjectId = '';
+        },
+        potentialYield(svcCfg, projectId) {
+          if (!projectId || !svcCfg) return 0;
+          const leaf = this.config.leaves.find(l => l.id === projectId);
+          if (!leaf) return 0;
+          const hwMult = this.hardwareConfig.multiplier;
+          // Simulate adding the new service (only serviceType and yieldMultiplier are needed)
+          const simulated = [
+            ...this.ownedServices.filter(s => s.assignedTo === projectId),
+            { serviceType: svcCfg.serviceType, yieldMultiplier: 1.0 },
+          ];
+          const bestMults = this.bestMultipliersPerType(leaf, simulated);
+          if (bestMults.some(m => m === 0)) return 0;
+          return leaf.baseYield * hwMult * Math.min(...bestMults);
         },
         restartService(uid) {
           const svc = this.ownedServices.find(s => s.uid === uid);
