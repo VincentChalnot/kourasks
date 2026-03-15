@@ -3,7 +3,7 @@
 // ── Game State ──────────────────────────────────────────────────────────────
 
 const gameState = {
-  kouraks: 0,
+  kouraks: 500,
   totalEarned: 0,
   hardwareLevel: 1,
   ownedServices: [],  // Runtime service instances with uid, configId, status, etc.

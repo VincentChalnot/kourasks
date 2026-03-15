@@ -102,7 +102,7 @@ const GAME_CONFIG = {
   leaves: [
     {
       id: 'synchro-allopneus', name: 'Synchro Allopneus', isLeaf: true,
-      requires: ['database', 'backend', 'message-queue'], baseYield: 15, unlockAt: 0,
+      requires: ['database', 'backend'], baseYield: 15, unlockAt: 0,
       description: 'Synchronise des données. Vers où. Depuis quoi. On sait plus.',
     },
     {
