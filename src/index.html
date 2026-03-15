@@ -911,7 +911,7 @@ serviceTypeLabels:
       Alpine.data('game', () => ({
         // ── State ────────────────────────────────────────────────
         config: GAME_CONFIG,
-        kouraks: 500,
+        kouraks: 500,   // New players start with 500 K; reset goes to 0 (intentional, original design)
         totalEarned: 0,
         hardwareLevel: 1,
         ownedServices: [],
