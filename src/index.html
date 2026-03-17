@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOURASKS - Idle Tech Satire</title>
+
+    <!-- Pico.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="app.css">
+</head>
+<body x-data="game" x-init="init()">
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="score-section">
+            <div class="score-label">Kouraks</div>
+            <div class="score-value" x-text="formatNumber(kouraks)">0</div>
+            <div class="yield-value" :class="{'positive': currentNetYield >= 0, 'negative': currentNetYield < 0}">
+                <span x-text="(currentNetYield >= 0 ? '+' : '') + formatNumber(currentNetYield)">0</span> K/s
+            </div>
+        </div>
+
+        <div class="center-section">
+            <h1>KOURASKS</h1>
+        </div>
+
+        <div class="info-section">
+            <div class="ceo-lives">PDG: <span x-text="(3 - projectFailures) + '/3'">3/3</span></div>
+            <div class="trimester">Trimestre <span x-text="formatTrimester(currentTrimester)">0</span></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="game-container">
+        <!-- Left Panel: Hardware & Projects -->
+        <div class="left-panel">
+            <!-- Hardware Section -->
+            <section class="hardware-section">
+                <h2>Hardware déployé</h2>
+                <div class="hardware-list">
+                    <template x-if="hardwareInstances.length === 0">
+                        <div class="empty-message">Aucun hardware déployé</div>
+                    </template>
+
+                    <template x-for="hwInstance in hardwareInstances" :key="hwInstance.id">
+                        <div class="hardware-card" :class="{'crashed': hwInstance.status === 'crashed'}">
+                            <div class="card-header" @click="hwInstance.expanded = !hwInstance.expanded">
+                                <h3 x-text="getHardware(hwInstance.hardwareId).name"></h3>
+                                <div class="hardware-status">
+                                    <span class="status-badge" :class="hwInstance.status" x-text="hwInstance.status"></span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="hardware-gauge">
+                                    <div class="gauge-label">
+                                        <span>Charge:</span>
+                                        <span x-text="formatNumber(getHardwareLoad(hwInstance)) + ' / ' + formatNumber(getHardware(hwInstance.hardwareId).maximumYield) + ' K/s'"></span>
+                                    </div>
+                                    <div class="gauge-bar">
+                                        <div class="gauge-fill" :style="'width: ' + Math.min(100, (getHardwareLoad(hwInstance) / getHardware(hwInstance.hardwareId).maximumYield) * 100) + '%'"></div>
+                                    </div>
+                                </div>
+                                <div class="hardware-cost">
+                                    Coût: <span x-text="formatNumber(getHardware(hwInstance.hardwareId).recurringCost) + ' K/s'"></span>
+                                </div>
+
+                                <!-- Services on this hardware -->
+                                <template x-if="hwInstance.expanded">
+                                    <div class="hardware-services">
+                                        <h4>Services hébergés:</h4>
+                                        <template x-for="svcInstance in getServicesOnHardware(hwInstance.id)" :key="svcInstance.id">
+                                            <div class="service-mini">
+                                                <span x-text="getService(svcInstance.serviceId).name"></span>
+                                                <span class="status-badge" :class="svcInstance.status" x-text="svcInstance.status"></span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <!-- Actions -->
+                                <div class="card-actions">
+                                    <template x-if="hwInstance.status === 'crashed'">
+                                        <button @click="restartHardware(hwInstance)">Redémarrer</button>
+                                    </template>
+                                    <button @click="sellHardware(hwInstance)" class="secondary">Vendre</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <button class="deploy-button" @click="openHardwareMarketplace()">Déployer Hardware</button>
+            </section>
+
+            <!-- Projects Section -->
+            <section class="projects-section">
+                <h2>Projets Actifs</h2>
+                <div class="projects-list">
+                    <template x-if="activeProjectInstances.length === 0">
+                        <div class="empty-message">Aucun projet actif</div>
+                    </template>
+
+                    <template x-for="projInstance in activeProjectInstances" :key="projInstance.projectId">
+                        <div class="project-card" :class="{'has-issues': hasProjectIssues(projInstance)}">
+                            <div class="project-header">
+                                <h3 x-text="getProject(projInstance.projectId).name"></h3>
+                                <div class="project-stats">
+                                    <span x-text="formatNumber(getTotalProjectProduction(projInstance)) + ' K'"></span>
+                                    |
+                                    <span x-text="formatNumber(getProjectYield(projInstance)) + ' K/s'"></span>
+                                </div>
+                            </div>
+                            <p class="project-description" x-text="getProject(projInstance.projectId).description"></p>
+
+                            <!-- KPI Progress -->
+                            <template x-if="projInstance.currentVersionId">
+                                <div class="kpi-section">
+                                    <div class="kpi-label">
+                                        <span>Objectif KPI:</span>
+                                        <span x-text="formatNumber(getProjectKpiProgress(projInstance)) + ' / ' + formatNumber(getCurrentProjectVersion(projInstance).targetProduction) + ' K'"></span>
+                                    </div>
+                                    <div class="kpi-bar">
+                                        <div class="kpi-fill" :style="'width: ' + Math.min(100, (getProjectKpiProgress(projInstance) / getCurrentProjectVersion(projInstance).targetProduction) * 100) + '%'"></div>
+                                    </div>
+                                    <div class="strikes" x-show="projInstance.strikes > 0">
+                                        Strikes: <span x-text="projInstance.strikes + '/3'"></span>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Requirements badges -->
+                            <div class="requirements-badges">
+                                <template x-for="reqType in getProjectRequirements(projInstance)" :key="reqType">
+                                    <div class="requirement-badge"
+                                         :class="getRequirementStatus(projInstance, reqType)"
+                                         @click="openServiceMarketplaceForType(projInstance, reqType)">
+                                        <span x-text="reqType"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </section>
+        </div>
+
+        <!-- Right Panel: Services -->
+        <div class="right-panel">
+            <section class="services-section">
+                <h2>Services Déployés</h2>
+                <div class="services-list">
+                    <template x-if="serviceInstances.length === 0">
+                        <div class="empty-message">Aucun service déployé</div>
+                    </template>
+
+                    <template x-for="svcInstance in serviceInstances" :key="svcInstance.id">
+                        <div class="service-card" :class="{'crashed': svcInstance.status === 'crashed'}">
+                            <div class="card-header">
+                                <h3 x-text="getService(svcInstance.serviceId).name"></h3>
+                                <span class="status-badge" :class="svcInstance.status" x-text="svcInstance.status"></span>
+                            </div>
+                            <div class="card-body">
+                                <div class="service-info">
+                                    <div><strong>Version:</strong> <span x-text="getServiceVersion(svcInstance.serviceVersionId).name"></span></div>
+                                    <div><strong>Type:</strong> <span x-text="getService(svcInstance.serviceId).type"></span></div>
+                                    <div><strong>Yield:</strong> <span x-text="formatNumber(getServiceVersion(svcInstance.serviceVersionId).baseYield || 0) + ' K/s'"></span></div>
+                                    <template x-if="svcInstance.assignedHardwareId">
+                                        <div><strong>Hardware:</strong> <span x-text="getHardware(svcInstance.assignedHardwareId).name"></span></div>
+                                    </template>
+                                    <template x-if="svcInstance.assignedProjectId">
+                                        <div><strong>Projet:</strong> <span x-text="getProject(svcInstance.assignedProjectId).name"></span></div>
+                                    </template>
+                                </div>
+
+                                <div class="card-actions">
+                                    <template x-if="svcInstance.status === 'crashed'">
+                                        <button @click="restartService(svcInstance)">Redémarrer</button>
+                                    </template>
+                                    <template x-if="svcInstance.status === 'running'">
+                                        <button @click="stopService(svcInstance)" class="secondary">Arrêter</button>
+                                    </template>
+                                    <template x-if="svcInstance.status === 'stopped'">
+                                        <button @click="startService(svcInstance)">Démarrer</button>
+                                    </template>
+                                    <button @click="configureService(svcInstance)" class="secondary">Configurer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <button class="deploy-button" @click="openServiceMarketplace()">Déployer Service</button>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer / Terminal -->
+    <footer class="terminal">
+        <div class="terminal-header">
+            <span>TERMINAL SYSTEM</span>
+            <button @click="logs = []" class="secondary">Clear</button>
+        </div>
+        <div class="terminal-content">
+            <template x-for="(log, index) in logs.slice(-50)" :key="index">
+                <div class="log-entry" :class="log.type">
+                    <span class="log-time" x-text="formatTime(log.time)"></span>
+                    <span class="log-message" x-text="log.message"></span>
+                </div>
+            </template>
+        </div>
+    </footer>
+
+    <!-- Hardware Marketplace Modal -->
+    <dialog :open="showHardwareMarketplace" @click.self="showHardwareMarketplace = false">
+        <article>
+            <header>
+                <h2>Marketplace Hardware</h2>
+                <button @click="showHardwareMarketplace = false" aria-label="Close" class="close"></button>
+            </header>
+
+            <div class="marketplace-content">
+                <template x-for="hw in availableHardware" :key="hw.id">
+                    <div class="marketplace-item">
+                        <div class="item-header">
+                            <h3 x-text="hw.name"></h3>
+                            <span class="item-cost" x-text="formatNumber(hw.deployCost) + ' K'"></span>
+                        </div>
+                        <p x-text="hw.description"></p>
+                        <div class="item-stats">
+                            <div><strong>Capacité max:</strong> <span x-text="formatNumber(hw.maximumYield) + ' K/s'"></span></div>
+                            <div><strong>Coût récurrent:</strong> <span x-text="formatNumber(hw.recurringCost) + ' K/s'"></span></div>
+                            <div><strong>Temps déploiement:</strong> <span x-text="hw.deployTime + 's'"></span></div>
+                        </div>
+                        <button @click="deployHardware(hw)" :disabled="kouraks < hw.deployCost">
+                            Déployer (<span x-text="formatNumber(hw.deployCost)"></span> K)
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </article>
+    </dialog>
+
+    <!-- Service Marketplace Modal -->
+    <dialog :open="showServiceMarketplace" @click.self="closeServiceMarketplace()">
+        <article>
+            <header>
+                <h2>Marketplace Services</h2>
+                <button @click="closeServiceMarketplace()" aria-label="Close" class="close"></button>
+            </header>
+
+            <div class="marketplace-filters">
+                <label>
+                    <input type="checkbox" x-model="serviceMarketplaceFilters.latestOnly">
+                    Uniquement les dernières versions
+                </label>
+            </div>
+
+            <div class="marketplace-content">
+                <template x-for="svc in filteredServices" :key="svc.id">
+                    <div class="marketplace-item">
+                        <div class="item-header">
+                            <h3 x-text="svc.name"></h3>
+                            <span class="service-type" x-text="svc.type"></span>
+                        </div>
+                        <p x-text="svc.description"></p>
+
+                        <!-- Versions -->
+                        <div class="service-versions">
+                            <template x-for="version in getFilteredVersions(svc)" :key="version.id">
+                                <div class="version-item" :class="{'deprecated': isVersionDeprecated(version)}">
+                                    <div class="version-header">
+                                        <strong x-text="version.name"></strong>
+                                        <template x-if="isVersionDeprecated(version)">
+                                            <span class="deprecated-badge">Déprécié</span>
+                                        </template>
+                                    </div>
+                                    <div class="version-stats">
+                                        <template x-if="version.baseYield">
+                                            <div><strong>Yield:</strong> <span x-text="formatNumber(version.baseYield) + ' K/s'"></span></div>
+                                        </template>
+                                        <div><strong>Coût:</strong> <span x-text="formatNumber(version.deployCost) + ' K'"></span></div>
+                                        <div><strong>Récurrent:</strong> <span x-text="formatNumber(version.recurringCost) + ' K/s'"></span></div>
+                                        <div><strong>Crash rate:</strong> <span x-text="(version.crashRate * 100).toFixed(2) + '%/s'"></span></div>
+                                    </div>
+                                    <button @click="selectServiceForDeploy(svc, version)" :disabled="kouraks < version.deployCost">
+                                        Déployer (<span x-text="formatNumber(version.deployCost)"></span> K)
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </article>
+    </dialog>
+
+    <!-- Service Configuration Modal -->
+    <dialog :open="showServiceConfig" @click.self="showServiceConfig = false">
+        <article x-show="selectedServiceConfig">
+            <header>
+                <h2>Configuration Service</h2>
+                <button @click="showServiceConfig = false" aria-label="Close" class="close"></button>
+            </header>
+
+            <template x-if="selectedServiceConfig">
+                <div class="config-content">
+                    <h3 x-text="selectedServiceConfig.service.name + ' - ' + selectedServiceConfig.version.name"></h3>
+                    <p x-text="selectedServiceConfig.service.description"></p>
+
+                    <div class="config-form">
+                        <!-- Hardware selection -->
+                        <template x-if="selectedServiceConfig.version.requireHardware">
+                            <label>
+                                <span>Hardware cible:</span>
+                                <select x-model="selectedServiceConfig.hardwareId">
+                                    <option value="">Sélectionner un hardware</option>
+                                    <template x-for="hwInstance in runningHardwareInstances" :key="hwInstance.id">
+                                        <option :value="hwInstance.id" x-text="getHardware(hwInstance.hardwareId).name"></option>
+                                    </template>
+                                </select>
+                            </label>
+                        </template>
+
+                        <!-- Project selection -->
+                        <template x-if="!selectedServiceConfig.service.global">
+                            <label>
+                                <span>Projet cible:</span>
+                                <select x-model="selectedServiceConfig.projectId">
+                                    <option value="">Sélectionner un projet</option>
+                                    <template x-for="projInstance in activeProjectInstances" :key="projInstance.projectId">
+                                        <option :value="projInstance.projectId" x-text="getProject(projInstance.projectId).name"></option>
+                                    </template>
+                                </select>
+                            </label>
+                        </template>
+                    </div>
+
+                    <footer>
+                        <button @click="showServiceConfig = false" class="secondary">Annuler</button>
+                        <button @click="confirmServiceDeploy()">Déployer</button>
+                    </footer>
+                </div>
+            </template>
+        </article>
+    </dialog>
+
+    <!-- Mail Modal -->
+    <dialog :open="showMail" @click.self="() => {}">
+        <article x-show="currentMail">
+            <header>
+                <h2 x-text="currentMail?.from || ''"></h2>
+            </header>
+
+            <template x-if="currentMail">
+                <div class="mail-content">
+                    <h3 x-text="currentMail.name"></h3>
+                    <p x-text="currentMail.description"></p>
+
+                    <div class="mail-options">
+                        <template x-for="option in currentMail.options" :key="option.id">
+                            <button @click="respondToMail(option)" x-text="option.name"></button>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </article>
+    </dialog>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"></script>
+
+    <!-- js-yaml -->
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
+
+    <!-- Game logic -->
+    <script src="app.js"></script>
+</body>
+</html>
