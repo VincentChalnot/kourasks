@@ -114,14 +114,18 @@ différentes (ex: `OurSQL v4` est plus rapide que `OurSQL v3` mais a un coût de
 La migration vers une version plus récente d'un service déjà déployé n'est pas automatique, le joueur doit choisir de
 redéployer le service pour bénéficier de la nouvelle version.
 
-| Propriété         | Type  | Description                                  |
-|-------------------|-------|----------------------------------------------|
-| *Champs communs*  |       | Voir "Propriétés communes" ci-dessus         |
-| `baseYield`       | float | Capacité brute en K/s                        |
-| `requireHardware` | bool  | Défaut à `true` (on-prem), `false` pour SaaS |
+| Propriété               | Type  | Description                                                         |
+|-------------------------|-------|---------------------------------------------------------------------|
+| *Champs communs*        |       | Voir "Propriétés communes" ci-dessus                                |
+| `baseYield`             | float | Capacité brute en K/s                                               |
+| `requireHardware`       | bool  | Défaut à `true` (on-prem), `false` pour SaaS                        |
+| `deprecatedAtTrimester` | float | Trimestre à partir duquel la version est dépréciée (null si jamais) |
 
 Si un service n'a pas de `baseYield` défini, il ne doit pas être pris en compte dans le calcul de la production totale
 du projet ou de la charge serveur. (null ≠ 0)
+
+Une version dépréciée est toujours fonctionnelle par contre son crashRate va augmenter avec le temps (mécanique à
+définir).
 
 ### Service Instance
 
@@ -129,6 +133,7 @@ Représente l'instance déployée d'une version de service, avec son état au ru
 
 | Propriété              | Type         | Description                                                                           |
 |------------------------|--------------|---------------------------------------------------------------------------------------|
+| `serviceId`            | string*      | ID du service ciblé                                                                   |
 | `serviceVersionId`     | string*      | ID de la version de service déployée                                                  |
 | `status`               | string*      | État actuel de l'instance (voir ci-dessous)                                           |
 | `assignedProjectId`    | string       | ID du projet cible (null si global)                                                   |
@@ -137,6 +142,10 @@ Représente l'instance déployée d'une version de service, avec son état au ru
 | `remainingDeployTime`  | float        | Temps restant avant de repasser en `running` après `deploying`                        |
 | `currentProduction`    | float*       | Défaut 0, sert à stocker la production temporaire en K entre deux **secondes** de jeu |
 | `productionHistory`    | array[float] | Historique de production (K produits pour chaque seconde en jeu)                      |
+
+On garde à la fois le serviceId (qui ne peut jamais changer) et le serviceVersionId qui peut changer lors de mises à
+jour. (Une mise à jour consiste simplement à aller configurer le service, choisir la nouvelle version et cliquer sur "
+déployer" pour appliquer les changements)
 
 **Status possibles :** `deploying`, `running`, `crashed`, `restarting`, `stopped`
 
@@ -192,9 +201,9 @@ message.
 
 ### Mail Option
 
-| Propriété        | Type   | Description                                     |
-|------------------|--------|-------------------------------------------------|
-| *Champs communs* |        | Voir "Propriétés communes" ci-dessus            |
+| Propriété        | Type | Description                          |
+|------------------|------|--------------------------------------|
+| *Champs communs* |      | Voir "Propriétés communes" ci-dessus |
 
 Le champ `name` disponible dans les propriétés communes sert de texte pour l'option.
 
