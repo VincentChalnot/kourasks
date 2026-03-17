@@ -1,0 +1,295 @@
+# KOURASKS - Configuration Projects
+# Projets avec leurs versions qui se débloquent progressivement
+# Chaque trimestre = 6 minutes = 360 secondes de jeu
+# targetProduction = K à produire sur 1 trimestre pour éviter un strike
+
+projects:
+  # ==========================================
+  # Projet 1 — Site Vitrine Personnel (T0-T2)
+  # ==========================================
+  - id: site-vitrine
+    name: "Site Vitrine Personnel"
+    description: "Le site web du PDG. HTML statique. 3 pages. Il veut des stats de visite en temps réel."
+    strikeEventId: site-vitrine-strike
+    failureEventId: site-vitrine-failed
+    versions:
+      - id: site-vitrine-v1
+        name: "v1.0"
+        version: "v1.0"
+        unlockAtTrimester: 0
+        eventId: site-vitrine-v1-launched
+        targetProduction: 1800  # ~5 K/s minimum sur 360s
+        serviceTypeRequirements: ['backend']
+        serviceRequirements: []
+
+      - id: site-vitrine-v1.5
+        name: "v1.5"
+        version: "v1.5"
+        unlockAtTrimester: 1.5
+        eventId: site-vitrine-v15-launched
+        targetProduction: 3600  # ~10 K/s, besoin d'upgrade hardware
+        serviceTypeRequirements: ['backend', 'reverse-proxy']
+        serviceRequirements: []
+
+  # ==========================================
+  # Projet 2 — Forum Community (T1.5-T4)
+  # ==========================================
+  - id: forum-community
+    name: "Forum Community"
+    description: "Forum phpBB. Les utilisateurs râlent. Le modérateur est débordé. Les spammeurs sont contents."
+    strikeEventId: forum-strike
+    failureEventId: forum-failed
+    versions:
+      - id: forum-v1
+        name: "v1.0"
+        version: "v1.0"
+        unlockAtTrimester: 1.5
+        eventId: forum-v1-launched
+        targetProduction: 4500  # Besoin backend + database
+        serviceTypeRequirements: ['backend', 'database']
+        serviceRequirements: []
+
+      - id: forum-v2
+        name: "v2.0"
+        version: "v2.0"
+        unlockAtTrimester: 3.5
+        eventId: forum-v2-launched
+        targetProduction: 12000  # Migration forcée, + storage
+        serviceTypeRequirements: ['backend', 'database', 'storage']
+        serviceRequirements: []
+
+  # ==========================================
+  # Projet 3 — E-commerce Boutique (T2.5-T6)
+  # ==========================================
+  - id: ecommerce-boutique
+    name: "E-commerce Boutique"
+    description: "Boutique en ligne. Paiement CB. Le tunnel de conversion fait 7 étapes. Personne ne comprend pourquoi."
+    strikeEventId: ecommerce-strike
+    failureEventId: ecommerce-failed
+    versions:
+      - id: ecommerce-v1
+        name: "v1.0"
+        version: "v1.0"
+        unlockAtTrimester: 2.5
+        eventId: ecommerce-v1-launched
+        targetProduction: 18000  # Stack complète
+        serviceTypeRequirements: ['backend', 'database', 'email']
+        serviceRequirements: []
+
+      - id: ecommerce-v2
+        name: "v2.0"
+        version: "v2.0"
+        unlockAtTrimester: 5.0
+        eventId: ecommerce-v2-launched
+        targetProduction: 45000  # + cache obligatoire
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'email']
+        serviceRequirements: []
+
+  # ==========================================
+  # Projet 4 — SaaS Gestion Projet (T4-T7.5)
+  # ==========================================
+  - id: saas-gestion
+    name: "SaaS Gestion de Projet"
+    description: "Clone de Jira. En moins bien. Les tickets se perdent. On appelle ça une 'feature' de gestion agile."
+    strikeEventId: saas-strike
+    failureEventId: saas-failed
+    versions:
+      - id: saas-v1
+        name: "v1.0"
+        version: "v1.0"
+        unlockAtTrimester: 4.0
+        eventId: saas-v1-launched
+        targetProduction: 35000  # Architecture moderne
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'storage']
+        serviceRequirements: []
+
+      - id: saas-v2
+        name: "v2.0"
+        version: "v2.0"
+        unlockAtTrimester: 6.5
+        eventId: saas-v2-launched
+        targetProduction: 90000  # + message queue
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'message-queue', 'storage']
+        serviceRequirements: []
+
+  # ==========================================
+  # Projet 5 — API Mobile Backend (T5.5-T9)
+  # ==========================================
+  - id: api-mobile
+    name: "API Mobile Backend"
+    description: "Backend pour app mobile. L'app iOS crash. L'app Android aussi. Le backend est stable. C'est déjà ça."
+    strikeEventId: api-mobile-strike
+    failureEventId: api-mobile-failed
+    versions:
+      - id: api-mobile-v1
+        name: "v1.0"
+        version: "v1.0"
+        unlockAtTrimester: 5.5
+        eventId: api-mobile-v1-launched
+        targetProduction: 75000
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'cdn']
+        serviceRequirements: []
+
+      - id: api-mobile-v2
+        name: "v2.0"
+        version: "v2.0"
+        unlockAtTrimester: 8.0
+        eventId: api-mobile-v2-launched
+        targetProduction: 180000  # + search engine
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'search', 'cdn']
+        serviceRequirements: []
+
+  # ==========================================
+  # Projet 6 — Plateforme Streaming (T7-T10.5)
+  # ==========================================
+  - id: streaming-platform
+    name: "Plateforme de Streaming"
+    description: "VOD like Netflix. Les vidéos bufferent. La facturation CDN explose. Le PDG ne comprend pas."
+    strikeEventId: streaming-strike
+    failureEventId: streaming-failed
+    versions:
+      - id: streaming-v1
+        name: "v1.0"
+        version: "v1.0"
+        unlockAtTrimester: 7.0
+        eventId: streaming-v1-launched
+        targetProduction: 150000  # Très gourmand
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'storage', 'cdn']
+        serviceRequirements: []
+
+      - id: streaming-v2
+        name: "v2.0"
+        version: "v2.0"
+        unlockAtTrimester: 9.5
+        eventId: streaming-v2-launched
+        targetProduction: 350000  # Microservices + orchestration
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'message-queue', 'storage', 'cdn', 'orchestration']
+        serviceRequirements: []
+
+  # ==========================================
+  # Projet 7 — Fintech Payment (T8.5-T12)
+  # ==========================================
+  - id: fintech-payment
+    name: "Fintech Payment Gateway"
+    description: "Gateway de paiement. PCI-DSS compliant. L'audit de sécurité fait 200 pages. On en lit 3."
+    strikeEventId: fintech-strike
+    failureEventId: fintech-failed
+    versions:
+      - id: fintech-v1
+        name: "v1.0"
+        version: "v1.0"
+        unlockAtTrimester: 8.5
+        eventId: fintech-v1-launched
+        targetProduction: 280000  # Haute disponibilité requise
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'message-queue', 'auth', 'monitoring']
+        serviceRequirements: []
+
+      - id: fintech-v2
+        name: "v2.0"
+        version: "v2.0"
+        unlockAtTrimester: 11.0
+        eventId: fintech-v2-launched
+        targetProduction: 600000  # + service mesh
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'message-queue', 'auth', 'service-mesh', 'monitoring']
+        serviceRequirements: []
+
+  # ==========================================
+  # Projet 8 — IoT Data Platform (T10-T13.5)
+  # ==========================================
+  - id: iot-platform
+    name: "IoT Data Platform"
+    description: "Plateforme IoT. 10 000 capteurs. Les données arrivent. En désordre. Parfois. On appelle ça du temps réel."
+    strikeEventId: iot-strike
+    failureEventId: iot-failed
+    versions:
+      - id: iot-v1
+        name: "v1.0"
+        version: "v1.0"
+        unlockAtTrimester: 10.0
+        eventId: iot-v1-launched
+        targetProduction: 500000  # Gros volume de données
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'message-queue', 'monitoring']
+        serviceRequirements: []
+
+      - id: iot-v2
+        name: "v2.0"
+        version: "v2.0"
+        unlockAtTrimester: 12.5
+        eventId: iot-v2-launched
+        targetProduction: 1000000  # Time series DB
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'message-queue', 'orchestration', 'monitoring']
+        serviceRequirements: []
+
+  # ==========================================
+  # Projet 9 — Social Network (T11.5-T15)
+  # ==========================================
+  - id: social-network
+    name: "Réseau Social"
+    description: "Clone de Twitter. En moins bien. Les posts disparaissent. Le feed est vide. Les utilisateurs partent."
+    strikeEventId: social-strike
+    failureEventId: social-failed
+    versions:
+      - id: social-v1
+        name: "v1.0"
+        version: "v1.0"
+        unlockAtTrimester: 11.5
+        eventId: social-v1-launched
+        targetProduction: 850000  # Très scalable
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'message-queue', 'search', 'cdn', 'monitoring']
+        serviceRequirements: []
+
+      - id: social-v2
+        name: "v2.0"
+        version: "v2.0"
+        unlockAtTrimester: 14.0
+        eventId: social-v2-launched
+        targetProduction: 1800000  # Full stack moderne
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'message-queue', 'search', 'cdn', 'service-mesh', 'ci-cd', 'monitoring']
+        serviceRequirements: []
+
+  # ==========================================
+  # Projet 10 — AI/ML Platform (T13-T17+)
+  # ==========================================
+  - id: aiml-platform
+    name: "AI/ML Platform"
+    description: "Plateforme ML. Les modèles s'entraînent. Lentement. Le GPU coûte 10 000€/mois. On fait du CPU."
+    strikeEventId: aiml-strike
+    failureEventId: aiml-failed
+    versions:
+      - id: aiml-v1
+        name: "v1.0"
+        version: "v1.0"
+        unlockAtTrimester: 13.0
+        eventId: aiml-v1-launched
+        targetProduction: 1500000  # Très gourmand en ressources
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'message-queue', 'storage', 'serverless', 'monitoring']
+        serviceRequirements: []
+
+      - id: aiml-v2
+        name: "v2.0"
+        version: "v2.0"
+        unlockAtTrimester: 15.5
+        eventId: aiml-v2-launched
+        targetProduction: 3000000  # Endpoint
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'message-queue', 'storage', 'serverless', 'orchestration', 'platform', 'monitoring']
+        serviceRequirements: []
+
+      - id: aiml-v3
+        name: "v3.0 - RAG"
+        version: "v3.0"
+        unlockAtTrimester: 17.5
+        eventId: aiml-v3-launched
+        targetProduction: 5000000  # Vector DB pour RAG
+        serviceTypeRequirements: ['backend', 'database', 'cache', 'message-queue', 'storage', 'serverless', 'orchestration', 'platform', 'monitoring']
+        serviceRequirements: []
+
+# Notes de conception:
+# - 10 projets principaux qui se débloquent progressivement
+# - Chaque projet a 2-3 versions avec requirements croissants
+# - targetProduction calculé sur base 1 trimestre = 360 secondes
+# - Les versions se débloquent avec un eventId pour lier aux mails
+# - serviceTypeRequirements augmente avec la complexité
+# - Progression narrative: site perso → e-commerce → SaaS → fintech → IoT → AI
+# - Les strikes déclenchent des événements pour les mails narratifs
+# - 3 strikes = projet échoué, déclenche failureEventId
+# - Au T17, le joueur gère ~10 projets simultanément (pic de complexité)

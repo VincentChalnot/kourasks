@@ -1,0 +1,628 @@
+# KOURASKS - Configuration Hardware
+# 10 tiers de hardware basés sur l'évolution historique réelle
+# Chaque trimestre dure 6 minutes de jeu réel
+# Les unlockAtTrimester sont des floats pour permettre un déblocage progressif
+
+hardware:
+  # ==========================================
+  # TIER 1 — 1994, ère 486 (Trimestre 0-1)
+  # ==========================================
+
+  - id: pakard-bele-486sx
+    name: "Pakard Bèle 486-Cesse"
+    description: "Entry-level de récupération. La carte mère grésille quand on lance le serveur. Vendue avec un clavier PS/2 cassé."
+    unlockAtTrimester: 0
+    deployCost: 0
+    deployTime: 5
+    recurringCost: 0.02  # Très faible consommation
+    crashRate: 0.0008    # 0.08% par seconde
+    restartDuration: 120
+    yieldMultiplier: 0.6
+    maximumYield: 9      # 0.6 × 15 K/s base
+    sellValue: 0
+
+  - id: conpac-deschprau-486dx
+    name: "Conpac DeschPrau 486DX"
+    description: "Trouvée au fond d'un couloir. Le BIOS date de 1994. Personne n'ose la débrancher."
+    unlockAtTrimester: 0
+    deployCost: 0        # Gratuit - déjà présent
+    deployTime: 10
+    recurringCost: 0.04
+    crashRate: 0.0005
+    restartDuration: 90
+    yieldMultiplier: 1.0
+    maximumYield: 15
+    sellValue: 0
+
+  # ==========================================
+  # TIER 2 — 1997, ère Pentium (Trimestre 1-2)
+  # ==========================================
+
+  - id: celereau-266
+    name: "Céléreau Deux-Soixante-Six"
+    description: "Celeron sans cache L2. Intel a réussi à vendre un CPU castré. Le marché a dit oui."
+    unlockAtTrimester: 0.8
+    deployCost: 150
+    deployTime: 15
+    recurringCost: 0.06
+    crashRate: 0.0004
+    restartDuration: 80
+    yieldMultiplier: 1.0
+    maximumYield: 17
+    sellValue: 22
+
+  - id: pentioum-mmx-233
+    name: "Pentioum MMX Deux-Trente-Trois + Vouadou-Deux"
+    description: "233 MHz + 3Dfx Voodoo 2. Acheté pour le gaming. Reconverti en serveur de staging. Le GPU sert à rien."
+    unlockAtTrimester: 1.2
+    deployCost: 280
+    deployTime: 20
+    recurringCost: 0.11  # Plus gourmand en énergie
+    crashRate: 0.0006    # Hardware gaming = moins stable
+    restartDuration: 70
+    yieldMultiplier: 1.3
+    maximumYield: 21
+    sellValue: 42
+
+  - id: pentioumpro-200
+    name: "PentioumPro Deux-Cent"
+    description: "200 MHz. Coûtait un rein en 1996. La ventilation ressemble à un sèche-cheveux industriel."
+    unlockAtTrimester: 1.5
+    deployCost: 200
+    deployTime: 20
+    recurringCost: 0.08
+    crashRate: 0.0003
+    restartDuration: 75
+    yieldMultiplier: 1.7
+    maximumYield: 25
+    sellValue: 30
+
+  # ==========================================
+  # TIER 3 — 2000, ère PIII/Athlon (Trimestre 2-3)
+  # ==========================================
+
+  - id: celereau-500-mendocino
+    name: "Céléreau Cinq-Cent Mendossino"
+    description: "500 MHz. Le cache L2 est sur le die. Intel a réinventé ce qui existait déjà. Ça marche mieux."
+    unlockAtTrimester: 2.0
+    deployCost: 600
+    deployTime: 25
+    recurringCost: 0.09
+    crashRate: 0.00035
+    restartDuration: 65
+    yieldMultiplier: 1.6
+    maximumYield: 28
+    sellValue: 90
+
+  - id: athlone-800-geforce256
+    name: "Athlône Huit-Cent + GéForse 256"
+    description: "800 MHz AMD + première GeForce. Personne ne comprend pourquoi le serveur a une carte graphique."
+    unlockAtTrimester: 2.4
+    deployCost: 1100
+    deployTime: 30
+    recurringCost: 0.15
+    crashRate: 0.0005
+    restartDuration: 60
+    yieldMultiplier: 2.1
+    maximumYield: 34
+    sellValue: 165
+
+  - id: sonn-sparkztation-20
+    name: "Sonn SPARKztation Vingt"
+    description: "Unix de l'époque. 4 ingénieurs savent encore la configurer. Deux sont partis en retraite."
+    unlockAtTrimester: 2.7
+    deployCost: 800
+    deployTime: 35
+    recurringCost: 0.12
+    crashRate: 0.00025
+    restartDuration: 70
+    yieldMultiplier: 2.8
+    maximumYield: 42
+    sellValue: 120
+
+  - id: rackspasse-dedie-p3
+    name: "Rackspasse Dédié P-Trois"
+    description: "Premier hébergement pro. Contrat 12 mois. La hotline répond en 48h. On appelle ça du 'support'."
+    unlockAtTrimester: 3.0
+    deployCost: 0       # Location
+    deployTime: 120     # Délai de provisioning
+    recurringCost: 1.2  # Coût de location mensuel converti
+    crashRate: 0.0002
+    restartDuration: 45
+    yieldMultiplier: 3.2
+    maximumYield: 51
+    sellValue: 0
+
+  # ==========================================
+  # TIER 4 — 2003, ère P4/Xeon (Trimestre 3-4.5)
+  # ==========================================
+
+  - id: celereau-d-24ghz
+    name: "Céléreau D Deux-Virgule-Quatre"
+    description: "Prescott-256. Le CPU qui a convaincu Intel d'arrêter la course aux GHz. 115W pour 2.4 GHz."
+    unlockAtTrimester: 3.5
+    deployCost: 2000
+    deployTime: 30
+    recurringCost: 0.22
+    crashRate: 0.00032
+    restartDuration: 55
+    yieldMultiplier: 2.5
+    maximumYield: 44
+    sellValue: 300
+
+  - id: athlone-64-fx51
+    name: "Athlône Soixante-Quatre FX-Cinquante-Et-Un"
+    description: "Premier CPU 64-bit grand public. Le socket 940. On ne savait pas encore qu'AMD allait tout changer."
+    unlockAtTrimester: 4.0
+    deployCost: 3500
+    deployTime: 35
+    recurringCost: 0.30
+    crashRate: 0.00045
+    restartDuration: 50
+    yieldMultiplier: 3.5
+    maximumYield: 61
+    sellValue: 525
+
+  - id: dell-pouarhedge-265
+    name: "Dell PouarHedge Deux-Six-Cinq"
+    description: "Premier vrai rack 1U. La salle des serveurs est un placard. Le responsable l'appelle 'datacenter'."
+    unlockAtTrimester: 4.3
+    deployCost: 3000
+    deployTime: 40
+    recurringCost: 0.28
+    crashRate: 0.00022
+    restartDuration: 60
+    yieldMultiplier: 4.5
+    maximumYield: 70
+    sellValue: 450
+
+  - id: ovh-dedie-1u
+    name: "OuvéHache Dédié Rack-Un-U"
+    description: "OVH ère Xeon. Roubaix datacenter. Le ticket support moyen met 36h. On apprend la patience."
+    unlockAtTrimester: 4.7
+    deployCost: 0
+    deployTime: 180
+    recurringCost: 1.8
+    crashRate: 0.00018
+    restartDuration: 50
+    yieldMultiplier: 5.2
+    maximumYield: 91
+    sellValue: 0
+
+  - id: virtuozo-vps-basic
+    name: "Virtuoze VPS Bassique"
+    description: "Premier VPS commercial abordable. Virtuozzo. On partage 1 core avec 8 voisins. Ça lag quand ils compilent."
+    unlockAtTrimester: 4.8
+    deployCost: 0
+    deployTime: 60
+    recurringCost: 1.1
+    crashRate: 0.0003
+    restartDuration: 35
+    yieldMultiplier: 3.0
+    maximumYield: 45
+    sellValue: 0
+
+  # ==========================================
+  # TIER 5 — 2006, ère Core 2 Duo (Trimestre 5-6)
+  # ==========================================
+
+  - id: kore2-e4300
+    name: "Kore-Deux E4-Troisième"
+    description: "1.8 GHz budget Core 2 Duo. Le ratio perf/prix a révolutionné le marché. Intel a mis 2 ans à y croire."
+    unlockAtTrimester: 5.0
+    deployCost: 6000
+    deployTime: 35
+    recurringCost: 0.35
+    crashRate: 0.00028
+    restartDuration: 48
+    yieldMultiplier: 4.2
+    maximumYield: 72
+    sellValue: 900
+
+  - id: kore2-e6600-geforce8800
+    name: "Kore-Deux E6-Six-Cent + GéForse 8800 GTX"
+    description: "E6600 + GeForce 8800 GTX. Le serveur de prod a un GPU à 600€. Personne ne pose de questions."
+    unlockAtTrimester: 5.5
+    deployCost: 9000
+    deployTime: 40
+    recurringCost: 0.55
+    crashRate: 0.0004
+    restartDuration: 45
+    yieldMultiplier: 5.8
+    maximumYield: 98
+    sellValue: 1350
+
+  - id: hp-prolyant-dl380-g5
+    name: "H.P. ProLyant DéLée-TroisHuit G5"
+    description: "Le cheval de bataille du milieu des années 2000. Encore en prod dans 70% des DSI françaises."
+    unlockAtTrimester: 5.8
+    deployCost: 10000
+    deployTime: 45
+    recurringCost: 0.70
+    crashRate: 0.00020
+    restartDuration: 55
+    yieldMultiplier: 7.5
+    maximumYield: 130
+    sellValue: 1500
+
+  - id: hetzner-ex6
+    name: "Hetzénaire EX-Six"
+    description: "Core 2 Quad dédié. Nuremberg datacenter. 39€/mois. Le rapport qualité/prix allemand."
+    unlockAtTrimester: 6.0
+    deployCost: 0
+    deployTime: 240
+    recurringCost: 2.8
+    crashRate: 0.00017
+    restartDuration: 42
+    yieldMultiplier: 8.5
+    maximumYield: 147
+    sellValue: 0
+
+  - id: linode-360
+    name: "Linn-Eau-De Nœud-360"
+    description: "Premier VPS SSD abordable. 360 Mo de RAM. Les logs prennent 40% de l'espace disque."
+    unlockAtTrimester: 6.2
+    deployCost: 0
+    deployTime: 45
+    recurringCost: 1.7
+    crashRate: 0.00025
+    restartDuration: 30
+    yieldMultiplier: 5.0
+    maximumYield: 87
+    sellValue: 0
+
+  # ==========================================
+  # TIER 6 — 2009, ère Nehalem/Cloud (Trimestre 6.5-7.5)
+  # ==========================================
+
+  - id: kore-i5-750
+    name: "Kore i5-Sept-Cinquante Linfield"
+    description: "Premier Core i5. Lynnfield. 4 cores. Intel a inventé le tier intermédiaire. Le marché a suivi."
+    unlockAtTrimester: 6.5
+    deployCost: 15000
+    deployTime: 40
+    recurringCost: 0.65
+    crashRate: 0.00024
+    restartDuration: 42
+    yieldMultiplier: 7.5
+    maximumYield: 130
+    sellValue: 2250
+
+  - id: kore-i7-920
+    name: "Kore i7-Neuf-Cent-Vingt Bloomfield"
+    description: "Le roi de l'overclocking 2009. 3.8 GHz air-cooling sans forcer. Les serveurs vibrent sous la charge."
+    unlockAtTrimester: 7.0
+    deployCost: 22000
+    deployTime: 45
+    recurringCost: 0.95
+    crashRate: 0.00038
+    restartDuration: 38
+    yieldMultiplier: 10.0
+    maximumYield: 174
+    sellValue: 3300
+
+  - id: dell-bladeaumille-m710
+    name: "Dell BladeauMille M-710"
+    description: "Blade. On a mis 16 serveurs dans un châssis 10U. La consommation électrique est désormais un problème RH."
+    unlockAtTrimester: 7.2
+    deployCost: 35000
+    deployTime: 60
+    recurringCost: 1.8
+    crashRate: 0.00018
+    restartDuration: 50
+    yieldMultiplier: 13.0
+    maximumYield: 226
+    sellValue: 5250
+
+  - id: hetzner-ex8
+    name: "Hetzénaire EX-Huit"
+    description: "Xeon/i7 dédié Nehalem. 59€/mois. Le châssis pèse 18kg. On ne déménage plus le datacenter."
+    unlockAtTrimester: 7.4
+    deployCost: 0
+    deployTime: 300
+    recurringCost: 4.2
+    crashRate: 0.00015
+    restartDuration: 40
+    yieldMultiplier: 15.0
+    maximumYield: 261
+    sellValue: 0
+
+  - id: aws-ec2-m1large
+    name: "Ausse EC2 em-Un-Large"
+    description: "Le cloud grand public arrive. 7.5 Go de RAM. $0.34/h. On découvre qu'on peut perdre de l'argent en dormant."
+    unlockAtTrimester: 7.5
+    deployCost: 0
+    deployTime: 30
+    recurringCost: 2.4
+    crashRate: 0.00022
+    restartDuration: 25
+    yieldMultiplier: 8.5
+    maximumYield: 148
+    sellValue: 0
+
+  # ==========================================
+  # TIER 7 — 2012, ère Sandy Bridge (Trimestre 8-9)
+  # ==========================================
+
+  - id: kore-i3-2120
+    name: "Kore i3-Deux-Cent-Vingt Sandy"
+    description: "Sandy Bridge budget. Le bond generationnel que tout le monde attendait depuis Core 2. Personne ne sait pourquoi."
+    unlockAtTrimester: 8.0
+    deployCost: 28000
+    deployTime: 40
+    recurringCost: 0.80
+    crashRate: 0.00020
+    restartDuration: 38
+    yieldMultiplier: 11.5
+    maximumYield: 200
+    sellValue: 4200
+
+  - id: kore-i7-2600k
+    name: "Kore i7-Deux-Mille-Six K Sandy"
+    description: "La légende de l'overclocking. 5 GHz possible. Sorti en 2011, toujours pertinent en 2016. Immortel."
+    unlockAtTrimester: 8.5
+    deployCost: 42000
+    deployTime: 45
+    recurringCost: 1.25
+    crashRate: 0.00035
+    restartDuration: 35
+    yieldMultiplier: 16.0
+    maximumYield: 278
+    sellValue: 6300
+
+  - id: hp-bl460c-gen8
+    name: "H.P. BL-QuatreZéro GenHuit"
+    description: "Sandy Bridge. Le bond qualitatif qu'on attendait depuis 2004. Personne dans l'équipe ne peut expliquer pourquoi."
+    unlockAtTrimester: 8.8
+    deployCost: 100000
+    deployTime: 70
+    recurringCost: 4.2
+    crashRate: 0.00012
+    restartDuration: 48
+    yieldMultiplier: 21.0
+    maximumYield: 365
+    sellValue: 15000
+
+  - id: hetzner-ex40
+    name: "Hetzénaire EX-Quarante"
+    description: "Très populaire. E3-1270 Sandy Bridge. 99€/mois. Le meilleur rapport dédié de l'histoire. 2012-2018 RIP."
+    unlockAtTrimester: 9.0
+    deployCost: 0
+    deployTime: 360
+    recurringCost: 7.0
+    crashRate: 0.00010
+    restartDuration: 35
+    yieldMultiplier: 24.0
+    maximumYield: 417
+    sellValue: 0
+
+  - id: digitalocean-droplet-ssd
+    name: "DigitOcéane Gouttelette SSD"
+    description: "Lancé 2011, rupture du marché VPS. Interface simple. SSD. $5/mois. Les étudiants découvrent le déploiement."
+    unlockAtTrimester: 9.2
+    deployCost: 0
+    deployTime: 20
+    recurringCost: 3.5
+    crashRate: 0.00018
+    restartDuration: 22
+    yieldMultiplier: 14.0
+    maximumYield: 243
+    sellValue: 0
+
+  # ==========================================
+  # TIER 8 — 2016, ère Skylake (Trimestre 9.5-10.5)
+  # ==========================================
+
+  - id: kore-i5-6500
+    name: "Kore i5-Six-Mille-Cinq Skylaque"
+    description: "Skylake. On a enfin quitté le 14nm+++++. Intel promet du 10nm pour 2017. Spoiler: 2019."
+    unlockAtTrimester: 9.5
+    deployCost: 55000
+    deployTime: 45
+    recurringCost: 1.1
+    crashRate: 0.00018
+    restartDuration: 35
+    yieldMultiplier: 19.0
+    maximumYield: 330
+    sellValue: 8250
+
+  - id: kore-i7-6700k
+    name: "Kore i7-Six-Mille-Sept K Skylaque"
+    description: "4 GHz stock. Overclockable à 4.8 GHz. La dernière génération avant que le TDP devienne un sujet politique."
+    unlockAtTrimester: 10.0
+    deployCost: 80000
+    deployTime: 50
+    recurringCost: 1.6
+    crashRate: 0.00032
+    restartDuration: 32
+    yieldMultiplier: 26.0
+    maximumYield: 452
+    sellValue: 12000
+
+  - id: cisko-ucs-b200-m4
+    name: "Cisko UCS B-DeuxCent M.4"
+    description: "Policy-driven. SDN-ready. 3 ingénieurs certifiés Cisco pour le configurer. Le ROI sera visible en 2031."
+    unlockAtTrimester: 10.3
+    deployCost: 300000
+    deployTime: 90
+    recurringCost: 10.5
+    crashRate: 0.00008
+    restartDuration: 45
+    yieldMultiplier: 34.0
+    maximumYield: 591
+    sellValue: 45000
+
+  - id: ovh-sys-sp32
+    name: "OuvéHache SYS SP-TrenteDeux"
+    description: "Dédié pro accessible. E5-1650v3. 249€/mois. Le support répond en 6h. C'est le luxe."
+    unlockAtTrimester: 10.5
+    deployCost: 0
+    deployTime: 480
+    recurringCost: 12.0
+    crashRate: 0.00007
+    restartDuration: 30
+    yieldMultiplier: 39.0
+    maximumYield: 678
+    sellValue: 0
+
+  - id: scaleway-c2-deluxe
+    name: "Skalewé C2-Déluxe"
+    description: "Cloud FR lancé 2015. Dedibox dans le cloud. Les IP sont à Paris. Le ping est excellent. On est fiers."
+    unlockAtTrimester: 10.6
+    deployCost: 0
+    deployTime: 35
+    recurringCost: 5.5
+    crashRate: 0.00015
+    restartDuration: 20
+    yieldMultiplier: 22.0
+    maximumYield: 382
+    sellValue: 0
+
+  # ==========================================
+  # TIER 9 — 2019, ère Zen 2/EPYC (Trimestre 11-12)
+  # ==========================================
+
+  - id: rizene-5-3600
+    name: "Rizène 5 Trois-Mille-Six"
+    description: "Meilleur rapport perf/prix de l'histoire du hardware. 6c/12t. AMD a gagné. Intel ne sait pas encore."
+    unlockAtTrimester: 11.0
+    deployCost: 120000
+    deployTime: 50
+    recurringCost: 1.8
+    crashRate: 0.00015
+    restartDuration: 30
+    yieldMultiplier: 32.0
+    maximumYield: 556
+    sellValue: 18000
+
+  - id: kore-i9-9900k
+    name: "Kore i9-Neuf-Mille-Neuf K"
+    description: "Roi du gaming 2018-2019. 5 GHz boost. 8c/16t. Intel a mis tous les watts. Littéralement. 95W TDP (réels: 180W)."
+    unlockAtTrimester: 11.5
+    deployCost: 180000
+    deployTime: 55
+    recurringCost: 2.6
+    crashRate: 0.00028
+    restartDuration: 28
+    yieldMultiplier: 45.0
+    maximumYield: 782
+    sellValue: 27000
+
+  - id: dell-emc-epyc-r750
+    name: "Dell EMC PouarHedge Épique R-750"
+    description: "64 cores AMD EPYC 7702. On pouvait avoir la même puissance moins cher. Mais ça n'avait pas le même logo."
+    unlockAtTrimester: 11.8
+    deployCost: 900000
+    deployTime: 120
+    recurringCost: 24.0
+    crashRate: 0.00005
+    restartDuration: 42
+    yieldMultiplier: 58.0
+    maximumYield: 1008
+    sellValue: 135000
+
+  - id: hetzner-ax101-epyc
+    name: "Hetzénaire AX-Cent-Et-Un Épique"
+    description: "EPYC dédié lancé 2021. Meilleur rapport EPYC du marché. 299€/mois. Nuremberg. Le ping est honnête."
+    unlockAtTrimester: 12.0
+    deployCost: 0
+    deployTime: 600
+    recurringCost: 20.0
+    crashRate: 0.00004
+    restartDuration: 25
+    yieldMultiplier: 67.0
+    maximumYield: 1165
+    sellValue: 0
+
+  - id: aws-ec2-c5-2xlarge
+    name: "Ausse EC2 c-Cinq-DeuxXL"
+    description: "Cascade Lake optimisé compute. 8 vCPU. $0.34/h. On paie pour de l'hyperthreading vendu comme des cores."
+    unlockAtTrimester: 12.2
+    deployCost: 0
+    deployTime: 25
+    recurringCost: 10.5
+    crashRate: 0.00012
+    restartDuration: 18
+    yieldMultiplier: 38.0
+    maximumYield: 661
+    sellValue: 0
+
+  # ==========================================
+  # TIER 10 — 2022, ère Alder Lake/Milan (Trimestre 13-14)
+  # ==========================================
+
+  - id: kore-i5-12400-alder
+    name: "Kore i5-DouzeMille-Quatre Auldeur"
+    description: "Alder Lake. Value exceptionnelle. E-cores + P-cores. Le scheduler Linux ne comprend pas. Ça marche quand même."
+    unlockAtTrimester: 13.0
+    deployCost: 210000
+    deployTime: 55
+    recurringCost: 2.4
+    crashRate: 0.00012
+    restartDuration: 28
+    yieldMultiplier: 52.0
+    maximumYield: 904
+    sellValue: 31500
+
+  - id: rizene-7-5800x3d
+    name: "Rizène 7 Cinq-Mille-Huit Triplé-Dé"
+    description: "3D V-Cache. Roi du gaming 2022. 96 Mo de L3. AMD a stacké de la cache. Personne ne sait pourquoi ça marche."
+    unlockAtTrimester: 13.5
+    deployCost: 330000
+    deployTime: 60
+    recurringCost: 3.5
+    crashRate: 0.00024
+    restartDuration: 25
+    yieldMultiplier: 73.0
+    maximumYield: 1269
+    sellValue: 49500
+
+  - id: supromikro-epyc-ultreux
+    name: "SuproMikro AS-Vingt-Quatrième Épique Ultreux"
+    description: "Le summum de l'on-premise. EPYC 7763 Milan. Acheté juste avant de tout migrer sur le cloud."
+    unlockAtTrimester: 13.8
+    deployCost: 3000000
+    deployTime: 180
+    recurringCost: 70.0
+    crashRate: 0.00002
+    restartDuration: 50
+    yieldMultiplier: 95.0
+    maximumYield: 1652
+    sellValue: 450000
+
+  - id: hetzner-ax162r-epyc
+    name: "Hetzénaire AX-Cent-Soixante-Deux-R"
+    description: "EPYC 7702. 128 threads dédiés. 599€/mois. Le serveur idéal. Acheté après avoir migré 80% de l'infra en SaaS."
+    unlockAtTrimester: 14.0
+    deployCost: 0
+    deployTime: 720
+    recurringCost: 32.0
+    crashRate: 0.00001
+    restartDuration: 22
+    yieldMultiplier: 108.0
+    maximumYield: 1878
+    sellValue: 0
+
+  - id: hetzner-cloud-cx41
+    name: "Hetzénaire Kloud CX-Quarante-Et-Un"
+    description: "Cloud FR/EU. Excellent rapport qualité/prix. 16 Go RAM. 15€/mois. On a migré dessus puis on a tout re-migré sur AWS."
+    unlockAtTrimester: 14.2
+    deployCost: 0
+    deployTime: 15
+    recurringCost: 15.0
+    crashRate: 0.00010
+    restartDuration: 15
+    yieldMultiplier: 62.0
+    maximumYield: 1078
+    sellValue: 0
+
+# Notes de conception:
+# - Chaque trimestre = 6 minutes de jeu réel
+# - unlockAtTrimester en float permet un déblocage continu
+# - deployCost = 0 indique une location (recurringCost élevé)
+# - yieldMultiplier reflète la puissance relative du hardware
+# - maximumYield = capacité max avant throttling
+# - crashRate très faible pour hardware (surtout vs services)
+# - Les hardware gaming ont crashRate plus élevé et recurringCost élevé
+# - Les VPS ont deployTime court mais maximumYield limité
+# - Les dédiés ont deployTime long (provisioning) mais bon rapport

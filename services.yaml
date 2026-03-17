@@ -1,0 +1,2066 @@
+# KOURASKS - Configuration Services
+# 114 services répartis sur 10 tiers (T1-T10)
+# Chaque service a une ou plusieurs versions qui se débloquent progressivement
+# baseYield en K/s, deployCost en K, deployTime en secondes
+
+services:
+  # ==========================================
+  # TIER 1 — 1995, CGI/Web statique (Trimestre 0-1)
+  # ==========================================
+
+  - id: gras-pl
+    name: "GRAs.pl"
+    type: backend
+    description: "Perl CGI. Le script fait 47 lignes. 12 sont des regex incompréhensibles. Personne n'ose y toucher."
+    global: false
+    versions:
+      - id: gras-pl-v1
+        name: "v1.0"
+        unlockAtTrimester: 0
+        baseYield: 2.0
+        deployCost: 0
+        deployTime: 5
+        recurringCost: 0
+        crashRate: 0.002
+        restartDuration: 15
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 5.0  # Mort vers 2006
+
+  - id: apacheux-httpd
+    name: "Apacheux HTTPdi"
+    type: reverse-proxy
+    description: "NCSA HTTPd 0.6 devenu Apache. Le serveur web qui a construit l'internet. Avant Nginx."
+    global: false
+    versions:
+      - id: apacheux-httpd-v0
+        name: "Zéro-Six"
+        unlockAtTrimester: 0
+        baseYield: null  # Infrastructure service, pas de yield
+        deployCost: 0
+        deployTime: 8
+        recurringCost: 0
+        crashRate: 0.001
+        restartDuration: 20
+        yieldMultiplier: 1.05
+        requireHardware: true
+
+  - id: moisql
+    name: "MoïSQL"
+    type: database
+    description: "MySQL 1.0. Pas de transactions. Pas de clés étrangères. Mais ça marche."
+    global: false
+    versions:
+      - id: moisql-v1
+        name: "1.0 Community"
+        unlockAtTrimester: 0
+        baseYield: 1.5
+        deployCost: 0
+        deployTime: 15
+        recurringCost: 0
+        crashRate: 0.0025
+        restartDuration: 30
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 2.7  # Obsolète ~1997
+
+  - id: fatepe-workerot
+    name: "FaTéPé Workerot"
+    type: storage
+    description: "WU-FTPd. Accès anonyme activé par défaut. Les logs sont en clair. Personne ne les lit."
+    global: false
+    versions:
+      - id: fatepe-v1
+        name: "WU-2.4"
+        unlockAtTrimester: 0.5
+        baseYield: 0.8
+        deployCost: 0
+        deployTime: 10
+        recurringCost: 0
+        crashRate: 0.003
+        restartDuration: 12
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 4.3  # Mort ~2003
+
+  # ==========================================
+  # TIER 2 — 2000, LAMP/PHP 3 (Trimestre 1-2.5)
+  # ==========================================
+
+  - id: php
+    name: "PHP"
+    type: backend
+    description: "PHP/FI puis PHP 3. Personal Home Page. Rasmus Lerdorf ne savait pas ce qu'il créait."
+    global: false
+    versions:
+      - id: php-v3
+        name: "Troizième"
+        unlockAtTrimester: 1.0
+        baseYield: 3.5
+        deployCost: 0
+        deployTime: 8
+        recurringCost: 0
+        crashRate: 0.0018
+        restartDuration: 18
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 4.0  # Obsolète ~2000
+
+  - id: apacheux-httpd
+    versions:
+      - id: apacheux-httpd-v13
+        name: "1.3 LTS"
+        unlockAtTrimester: 1.2
+        baseYield: null
+        deployCost: 0
+        deployTime: 12
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 22
+        yieldMultiplier: 1.08
+        requireHardware: true
+
+  - id: moisql
+    versions:
+      - id: moisql-v3
+        name: "3.0 InnoDB"
+        unlockAtTrimester: 1.5
+        baseYield: 2.8
+        deployCost: 50
+        deployTime: 20
+        recurringCost: 0
+        crashRate: 0.0020
+        restartDuration: 35
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 5.0  # EOL 2006
+
+  - id: froid-fusion
+    name: "FroïdFusion"
+    type: backend
+    description: "ColdFusion 3. Macromedia. Le langage qui coûtait 5000$ la licence. Les startups achetaient quand même."
+    global: false
+    versions:
+      - id: froid-fusion-v3
+        name: "III"
+        unlockAtTrimester: 1.8
+        baseYield: 4.2
+        deployCost: 800
+        deployTime: 25
+        recurringCost: 0.5
+        crashRate: 0.0022
+        restartDuration: 28
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 5.0  # Mort ~2005
+
+  - id: nageois
+    name: "Nageois"
+    type: monitoring
+    description: "Nagios. Le monitoring qui réveille l'astreinte. À 3h du matin. Pour un faux positif."
+    global: true
+    versions:
+      - id: nageois-v1
+        name: "Alfa"
+        unlockAtTrimester: 2.0
+        baseYield: null
+        deployCost: 0
+        deployTime: 30
+        recurringCost: 0
+        crashRate: 0.0005
+        restartDuration: 25
+        yieldMultiplier: 1.02
+        requireHardware: true
+        deprecatedAtTrimester: 7.0  # Remplacé ~2014
+
+  # ==========================================
+  # TIER 3 — 2004, J2EE/post-dotcom (Trimestre 2.5-4)
+  # ==========================================
+
+  - id: tomkatt
+    name: "TomKatt"
+    type: backend
+    description: "Tomcat 4 Catalina. Java Servlet Container. Le fichier server.xml fait 850 lignes. Personne ne sait pourquoi."
+    global: false
+    versions:
+      - id: tomkatt-v4
+        name: "4.0 Catalina"
+        unlockAtTrimester: 2.5
+        baseYield: 5.5
+        deployCost: 0
+        deployTime: 35
+        recurringCost: 0
+        crashRate: 0.0015
+        restartDuration: 45
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: jeuxboss
+    name: "JeuxBoss"
+    type: backend
+    description: "JBoss 3 Application Server. EJB 2.0. Le deployment descriptor fait 200 lignes. Pour un Hello World."
+    global: false
+    versions:
+      - id: jeuxboss-v3
+        name: "3.0 EE"
+        unlockAtTrimester: 3.0
+        baseYield: 6.8
+        deployCost: 0
+        deployTime: 50
+        recurringCost: 0
+        crashRate: 0.0018
+        restartDuration: 60
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 6.0  # EOL 2012
+
+  - id: orakleur
+    name: "OraKleur"
+    type: database
+    description: "Oracle 9i. La base qui coûte un rein. Le support coûte l'autre. On achète quand même."
+    global: false
+    versions:
+      - id: orakleur-v9i
+        name: "9i Entreprize"
+        unlockAtTrimester: 3.2
+        baseYield: 8.0
+        deployCost: 5000
+        deployTime: 90
+        recurringCost: 2.5
+        crashRate: 0.0008
+        restartDuration: 120
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: nginx
+    name: "N-Ginx"
+    type: reverse-proxy
+    description: "Nginx 0.1. Le russe qui a tué Apache. Personne ne sait le prononcer correctement."
+    global: false
+    versions:
+      - id: nginx-v01
+        name: "Zéro-Un"
+        unlockAtTrimester: 3.5
+        baseYield: null
+        deployCost: 0
+        deployTime: 15
+        recurringCost: 0
+        crashRate: 0.0005
+        restartDuration: 8
+        yieldMultiplier: 1.12
+        requireHardware: true
+
+  - id: nageois
+    versions:
+      - id: nageois-v2
+        name: "2.0 Stable"
+        unlockAtTrimester: 3.8
+        baseYield: null
+        deployCost: 0
+        deployTime: 35
+        recurringCost: 0
+        crashRate: 0.0004
+        restartDuration: 22
+        yieldMultiplier: 1.05
+        requireHardware: true
+        deprecatedAtTrimester: 7.0
+
+  - id: akamai-cdn
+    name: "AkaMaï CDN"
+    type: cdn
+    description: "Le premier vrai CDN. Akamai. Vendu au forfait. Personne ne comprend la facture."
+    global: true
+    versions:
+      - id: akamai-prestige
+        name: "Prestige"
+        unlockAtTrimester: 4.0
+        baseYield: null
+        deployCost: 0
+        deployTime: 240
+        recurringCost: 8.0
+        crashRate: 0.0001
+        restartDuration: 5
+        yieldMultiplier: 1.15
+        requireHardware: false
+
+  - id: pret-kourakal
+    name: "Prêt KouraKal Express"
+    type: financial
+    description: "Le marché vous fait confiance. Pour l'instant. Taux d'intérêt: oui."
+    global: true
+    eventId: loan_available
+    versions:
+      - id: pret-kourakal-v1
+        name: "Express"
+        unlockAtEvent: zero_kouraks  # Débloqué quand on atteint 0K
+        baseYield: null
+        deployCost: -80000  # Injecte 80K immédiatement
+        deployTime: 0
+        recurringCost: -15  # Coût perpétuel (intérêts)
+        crashRate: 0
+        restartDuration: 0
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  # ==========================================
+  # TIER 4 — 2008, PHP 5/Symfony 1 (Trimestre 4-5.5)
+  # ==========================================
+
+  - id: php
+    versions:
+      - id: php-v5
+        name: "Cinq Community"
+        unlockAtTrimester: 4.0
+        baseYield: 7.2
+        deployCost: 0
+        deployTime: 12
+        recurringCost: 0
+        crashRate: 0.0012
+        restartDuration: 20
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 9.0  # EOL Dec 31 2018
+
+  - id: simphonie
+    name: "Simphonie"
+    type: backend
+    description: "Symfony. Le framework PHP qui a des conventions. Et de la documentation. Révolutionnaire."
+    global: false
+    versions:
+      - id: simphonie-v14
+        name: "1.4 LTS"
+        unlockAtTrimester: 4.5
+        baseYield: 8.5
+        deployCost: 0
+        deployTime: 25
+        recurringCost: 0
+        crashRate: 0.0010
+        restartDuration: 25
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 7.0  # EOL Feb 2012
+
+  - id: memcacheux
+    name: "MemCacheux"
+    type: cache
+    description: "Memcached 1.4. Le cache qui oublie tout quand on le redémarre. C'est une feature."
+    global: false
+    versions:
+      - id: memcacheux-v14
+        name: "1.4"
+        unlockAtTrimester: 4.8
+        baseYield: 3.0
+        deployCost: 0
+        deployTime: 10
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 8
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: moisql
+    versions:
+      - id: moisql-v51
+        name: "5.1 Pakke"
+        unlockAtTrimester: 5.0
+        baseYield: 5.5
+        deployCost: 100
+        deployTime: 30
+        recurringCost: 0
+        crashRate: 0.0015
+        restartDuration: 40
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 7.0  # EOL Dec 2013
+
+  - id: postgres
+    name: "PostGrès"
+    type: database
+    description: "PostgreSQL. La base qui fait tout bien. Personne ne l'utilise. MySQL est plus connu."
+    global: false
+    versions:
+      - id: postgres-v83
+        name: "8.3"
+        unlockAtTrimester: 5.2
+        baseYield: 6.2
+        deployCost: 0
+        deployTime: 35
+        recurringCost: 0
+        crashRate: 0.0010
+        restartDuration: 45
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 7.0  # EOL Feb 2013
+
+  - id: postafixe
+    name: "PosTafixe"
+    type: email
+    description: "Postfix 2. Le MTA qui remplace Sendmail. Personne ne comprend la config. C'est déjà mieux."
+    global: true
+    versions:
+      - id: postafixe-v2
+        name: "Deux"
+        unlockAtTrimester: 5.5
+        baseYield: null
+        deployCost: 0
+        deployTime: 40
+        recurringCost: 0
+        crashRate: 0.0006
+        restartDuration: 18
+        yieldMultiplier: 1.02
+        requireHardware: true
+
+  - id: mougnin
+    name: "Mougnin"
+    type: monitoring
+    description: "Munin. Le monitoring en RRD. Les graphes sont jolis. Ils arrivent 10 minutes après le crash."
+    global: true
+    versions:
+      - id: mougnin-v1
+        name: "Agent"
+        unlockAtTrimester: 5.8
+        baseYield: null
+        deployCost: 0
+        deployTime: 20
+        recurringCost: 0
+        crashRate: 0.0005
+        restartDuration: 15
+        yieldMultiplier: 1.03
+        requireHardware: true
+        deprecatedAtTrimester: 7.0
+
+  - id: obligations-kourakalistes
+    name: "Obligations KouraKalistes"
+    type: financial
+    description: "Rendement garanti 6.5%. Le prospectus mentionne 47 pages de risques. Personne ne les lit."
+    global: true
+    versions:
+      - id: obligations-65
+        name: "6.5%"
+        unlockAtTrimester: 6.0  # Mid-game only
+        baseYield: null
+        deployCost: 50000  # Investissement initial
+        deployTime: 0
+        recurringCost: -8  # Retour passif ~0.7 K/s
+        crashRate: 0
+        restartDuration: 0
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  # ==========================================
+  # TIER 5 — 2011, NoSQL/Rails/Node (Trimestre 6-7.5)
+  # ==========================================
+
+  - id: railzot
+    name: "Railzôt"
+    type: backend
+    description: "Ruby on Rails 3. Convention over Configuration. Le scaffolding génère 40 fichiers. Pour un CRUD."
+    global: false
+    versions:
+      - id: railzot-v3
+        name: "3.0"
+        unlockAtTrimester: 6.0
+        baseYield: 9.5
+        deployCost: 0
+        deployTime: 30
+        recurringCost: 0
+        crashRate: 0.0015
+        restartDuration: 35
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 7.0  # EOL June 2013
+
+  - id: diango
+    name: "Diango"
+    type: backend
+    description: "Django 1.3. Le framework Python avec batterie incluse. L'admin auto-générée impressionne tout le monde."
+    global: false
+    versions:
+      - id: diango-v13
+        name: "1.3"
+        unlockAtTrimester: 6.3
+        baseYield: 10.0
+        deployCost: 0
+        deployTime: 28
+        recurringCost: 0
+        crashRate: 0.0012
+        restartDuration: 30
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 7.0  # EOL Feb 2013
+
+  - id: noeuds-js
+    name: "Nœud.js"
+    type: backend
+    description: "Node.js 0.6. JavaScript côté serveur. Les callbacks s'emboîtent sur 12 niveaux. On appelle ça le callback hell."
+    global: false
+    versions:
+      - id: noeuds-v06
+        name: "Zéro-Six"
+        unlockAtTrimester: 6.5
+        baseYield: 11.5
+        deployCost: 0
+        deployTime: 18
+        recurringCost: 0
+        crashRate: 0.0020
+        restartDuration: 12
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 7.0  # Obsolète ~2013
+
+  - id: monguebd
+    name: "MongueBD"
+    type: database
+    description: "MongoDB 2.0. Web Scale. Les données disparaissent parfois. C'est documenté page 487."
+    global: false
+    versions:
+      - id: monguebd-v2
+        name: "2.0"
+        unlockAtTrimester: 6.8
+        baseYield: 7.5
+        deployCost: 0
+        deployTime: 25
+        recurringCost: 0
+        crashRate: 0.0025
+        restartDuration: 35
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: rediss
+    name: "Rédiss"
+    type: cache
+    description: "Redis. Le cache qui fait tout. Cache, pub/sub, queue, leaderboard. Le couteau suisse de la donnée."
+    global: false
+    versions:
+      - id: rediss-v24
+        name: "2.4"
+        unlockAtTrimester: 7.0
+        baseYield: 4.5
+        deployCost: 0
+        deployTime: 12
+        recurringCost: 0
+        crashRate: 0.0010
+        restartDuration: 10
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 8.0  # Obsolète ~2015
+
+  - id: lapin-mq
+    name: "LapinMQ"
+    type: message-queue
+    description: "RabbitMQ 2.0. AMQP. Les messages se perdent. L'exchange est mal configuré. On debugge pendant 3 jours."
+    global: false
+    versions:
+      - id: lapin-mq-v2
+        name: "2.0 Broker"
+        unlockAtTrimester: 7.2
+        baseYield: 3.5
+        deployCost: 0
+        deployTime: 30
+        recurringCost: 0
+        crashRate: 0.0015
+        restartDuration: 25
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: solreau
+    name: "SolReau"
+    type: search
+    description: "Solr 3. Lucene wrapped. Le moteur de recherche qui indexe tout. Même ce qu'on ne cherche jamais."
+    global: false
+    versions:
+      - id: solreau-v3
+        name: "3.0"
+        unlockAtTrimester: 7.5
+        baseYield: 2.8
+        deployCost: 0
+        deployTime: 40
+        recurringCost: 0
+        crashRate: 0.0012
+        restartDuration: 50
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: haiproxi
+    name: "HaïProxi"
+    type: reverse-proxy
+    description: "HAProxy 1.4. Le load balancer qui marche. La config est en français. Personne ne parle français."
+    global: false
+    versions:
+      - id: haiproxi-v14
+        name: "1.4"
+        unlockAtTrimester: 7.8
+        baseYield: null
+        deployCost: 0
+        deployTime: 20
+        recurringCost: 0
+        crashRate: 0.0006
+        restartDuration: 15
+        yieldMultiplier: 1.15
+        requireHardware: true
+
+  - id: graphiteux
+    name: "Graphiteux"
+    type: monitoring
+    description: "Graphite 0.9. Time series DB. Les metrics arrivent. Parfois. Le dashboard ressemble à du Minecraft."
+    global: true
+    versions:
+      - id: graphiteux-v09
+        name: "0.9"
+        unlockAtTrimester: 8.0
+        baseYield: null
+        deployCost: 0
+        deployTime: 35
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 30
+        yieldMultiplier: 1.04
+        requireHardware: true
+        deprecatedAtTrimester: 7.0
+
+  - id: kloudflair-basic
+    name: "KloudFlair Basic"
+    type: cdn
+    description: "Cloudflare gratuit. Le cache aggressif casse le site. On met 2 jours à comprendre pourquoi."
+    global: true
+    versions:
+      - id: kloudflair-basic
+        name: "Basic CDN"
+        unlockAtTrimester: 8.2
+        baseYield: null
+        deployCost: 0
+        deployTime: 60
+        recurringCost: 2.5
+        crashRate: 0.0002
+        restartDuration: 5
+        yieldMultiplier: 1.18
+        requireHardware: false
+
+  - id: ausse-s3
+    name: "Ausse S3-Eau"
+    type: storage
+    description: "AWS S3. Simple Storage Service. La facture n'est pas simple. Les coûts de sortie non plus."
+    global: true
+    versions:
+      - id: ausse-s3-standard
+        name: "Standard"
+        unlockAtTrimester: 8.5
+        baseYield: 1.5
+        deployCost: 0
+        deployTime: 30
+        recurringCost: 3.0
+        crashRate: 0.0001
+        restartDuration: 2
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  # ==========================================
+  # TIER 6 — 2014, Docker/BigData (Trimestre 8-9.5)
+  # ==========================================
+
+  - id: simphonie
+    versions:
+      - id: simphonie-v27
+        name: "2.7 LTS"
+        unlockAtTrimester: 8.0
+        baseYield: 12.5
+        deployCost: 0
+        deployTime: 30
+        recurringCost: 0
+        crashRate: 0.0010
+        restartDuration: 28
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 9.0  # EOL May 2019
+
+  - id: laravelo
+    name: "Laravelo"
+    type: backend
+    description: "Laravel 4. Le framework PHP qui copie Rails. Eloquent ORM. Le N+1 query problem est inclus."
+    global: false
+    versions:
+      - id: laravelo-v4
+        name: "4.0"
+        unlockAtTrimester: 8.5
+        baseYield: 13.0
+        deployCost: 0
+        deployTime: 28
+        recurringCost: 0
+        crashRate: 0.0011
+        restartDuration: 25
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: docqueur
+    name: "Docqueur"
+    type: container
+    description: "Docker 1.0. Build, Ship, Run. Les conteneurs résolvent tous les problèmes. Sauf ceux qu'ils créent."
+    global: false
+    versions:
+      - id: docqueur-v1
+        name: "1.0"
+        unlockAtTrimester: 9.0
+        baseYield: null
+        deployCost: 0
+        deployTime: 20
+        recurringCost: 0
+        crashRate: 0.0012
+        restartDuration: 15
+        yieldMultiplier: 1.08
+        requireHardware: true
+
+  - id: elastic-recherche
+    name: "ElasticRechèrche"
+    type: search
+    description: "Elasticsearch 1.4. Search as a Service. Le cluster est jaune. Personne ne sait ce que ça veut dire."
+    global: false
+    versions:
+      - id: elastic-v14
+        name: "1.4"
+        unlockAtTrimester: 9.2
+        baseYield: 5.5
+        deployCost: 100
+        deployTime: 50
+        recurringCost: 0
+        crashRate: 0.0015
+        restartDuration: 60
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 8.0  # Obsolète 2016
+
+  - id: kafquoi
+    name: "KafQuoi"
+    type: message-queue
+    description: "Kafka 0.8. Le message broker qui scale. Zookeeper est requis. Personne ne sait configurer Zookeeper."
+    global: false
+    versions:
+      - id: kafquoi-v08
+        name: "0.8"
+        unlockAtTrimester: 9.5
+        baseYield: 6.0
+        deployCost: 200
+        deployTime: 70
+        recurringCost: 0
+        crashRate: 0.0018
+        restartDuration: 45
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 8.0  # Obsolète ~2017
+
+  - id: kassandrabd
+    name: "KassandraBD"
+    type: database
+    description: "Cassandra 2.0. Eventually Consistent. Les données arrivent. Éventuellement. Peut-être."
+    global: false
+    versions:
+      - id: kassandrabd-v2
+        name: "2.0"
+        unlockAtTrimester: 9.8
+        baseYield: 9.0
+        deployCost: 150
+        deployTime: 80
+        recurringCost: 0
+        crashRate: 0.0020
+        restartDuration: 70
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: klikhousse
+    name: "KlikHousse"
+    type: database
+    description: "ClickHouse alpha. OLAP russe. Les requêtes sont rapides. Tant qu'on ne fait pas de JOIN."
+    global: false
+    versions:
+      - id: klikhousse-alpha
+        name: "Alpha"
+        unlockAtTrimester: 10.0
+        baseYield: 7.5
+        deployCost: 0
+        deployTime: 60
+        recurringCost: 0
+        crashRate: 0.0025
+        restartDuration: 50
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: elkasse
+    name: "ELKasse Stack"
+    type: monitoring
+    description: "ELK Stack 1.0. Elasticsearch + Logstash + Kibana. Les logs sont centralisés. Personne ne les cherche."
+    global: true
+    versions:
+      - id: elkasse-v1
+        name: "1.0"
+        unlockAtTrimester: 10.2
+        baseYield: null
+        deployCost: 300
+        deployTime: 90
+        recurringCost: 0
+        crashRate: 0.0010
+        restartDuration: 60
+        yieldMultiplier: 1.06
+        requireHardware: true
+
+  - id: ledape
+    name: "LéDAPe Ouvert"
+    type: auth
+    description: "OpenLDAP. L'annuaire enterprise. Le schéma est incompréhensible. La doc date de 1998."
+    global: true
+    versions:
+      - id: ledape-v1
+        name: "Ouvert"
+        unlockAtTrimester: 10.5
+        baseYield: null
+        deployCost: 0
+        deployTime: 120
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 40
+        yieldMultiplier: 1.03
+        requireHardware: true
+
+  - id: mailchimpanze
+    name: "MailChimpanzé"
+    type: email
+    description: "Mailchimp API. Email marketing SaaS. Les templates sont moches. On les utilise quand même."
+    global: true
+    versions:
+      - id: mailchimpanze-api
+        name: "API"
+        unlockAtTrimester: 10.8
+        baseYield: null
+        deployCost: 0
+        deployTime: 15
+        recurringCost: 4.5
+        crashRate: 0.0003
+        restartDuration: 5
+        yieldMultiplier: 1.02
+        requireHardware: false
+
+  - id: ausse-rds
+    name: "Ausse RéDéS Managed"
+    type: managed-db
+    description: "AWS RDS. Base de données managée. On paie pour ne pas faire les backups. Ils se font quand même pas."
+    global: true
+    versions:
+      - id: ausse-rds-mysql
+        name: "MySQL"
+        unlockAtTrimester: 11.0
+        baseYield: 8.5
+        deployCost: 0
+        deployTime: 180
+        recurringCost: 12.0
+        crashRate: 0.0005
+        restartDuration: 30
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  # ==========================================
+  # TIER 7 — 2017, K8s/Prometheus (Trimestre 11-12.5)
+  # ==========================================
+
+  - id: golangueux
+    name: "GoLangueux"
+    type: backend
+    description: "Go 1.8. Gopher mascotte. Les binaires sont statiques. Le garbage collector met en pause 200ms. C'est acceptable."
+    global: false
+    versions:
+      - id: golangueux-v18
+        name: "1.8"
+        unlockAtTrimester: 11.0
+        baseYield: 16.0
+        deployCost: 0
+        deployTime: 20
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 8
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: simphonie
+    versions:
+      - id: simphonie-v4
+        name: "4.0 Flex"
+        unlockAtTrimester: 11.5
+        baseYield: 15.5
+        deployCost: 0
+        deployTime: 28
+        recurringCost: 0
+        crashRate: 0.0009
+        restartDuration: 24
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 9.0  # EOL Nov 2020
+
+  - id: fastaipi
+    name: "FastAïPI"
+    type: backend
+    description: "FastAPI proto. Python async. Type hints partout. Swagger auto-généré. Les devs Python découvrent le typage."
+    global: false
+    versions:
+      - id: fastaipi-proto
+        name: "Proto"
+        unlockAtTrimester: 11.8
+        baseYield: 17.5
+        deployCost: 0
+        deployTime: 22
+        recurringCost: 0
+        crashRate: 0.0010
+        restartDuration: 12
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: trefikbal
+    name: "TréfikBal"
+    type: reverse-proxy
+    description: "Traefik 1.0. Le reverse proxy qui s'auto-configure. Avec Docker. Avec Kubernetes. Avec tout."
+    global: false
+    versions:
+      - id: trefikbal-v1
+        name: "1.0"
+        unlockAtTrimester: 12.0
+        baseYield: null
+        deployCost: 0
+        deployTime: 25
+        recurringCost: 0
+        crashRate: 0.0006
+        restartDuration: 12
+        yieldMultiplier: 1.18
+        requireHardware: true
+
+  - id: kuzubernetes
+    name: "Kuzubernètes"
+    type: orchestration
+    description: "Kubernetes 1.6. K8s. Le YAML fait 400 lignes. Pour un Hello World. Les devops sont heureux."
+    global: true
+    versions:
+      - id: kuzubernetes-v16
+        name: "1.6"
+        unlockAtTrimester: 12.2
+        baseYield: null
+        deployCost: 500
+        deployTime: 300
+        recurringCost: 0
+        crashRate: 0.0015
+        restartDuration: 120
+        yieldMultiplier: 1.12
+        requireHardware: true
+
+  - id: prometheos
+    name: "Prométhéos + Grapphane"
+    type: monitoring
+    description: "Prometheus + Grafana. Time series. Pull-based. Les dashboards sont beaux. Les alertes ne partent jamais."
+    global: true
+    versions:
+      - id: prometheos-v1
+        name: "Stack"
+        unlockAtTrimester: 12.5
+        baseYield: null
+        deployCost: 200
+        deployTime: 80
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 35
+        yieldMultiplier: 1.08
+        requireHardware: true
+
+  - id: rediss
+    versions:
+      - id: rediss-cluster
+        name: "Kluster HA"
+        unlockAtTrimester: 12.8
+        baseYield: 8.5
+        deployCost: 300
+        deployTime: 60
+        recurringCost: 0
+        crashRate: 0.0007
+        restartDuration: 20
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: keykloaque
+    name: "KeyKloaque"
+    type: auth
+    description: "Keycloak 3. Identity Provider. OpenID Connect. SAML. OAuth2. Personne ne comprend la différence."
+    global: true
+    versions:
+      - id: keykloaque-v3
+        name: "3.0"
+        unlockAtTrimester: 13.0
+        baseYield: null
+        deployCost: 150
+        deployTime: 90
+        recurringCost: 0
+        crashRate: 0.0010
+        restartDuration: 50
+        yieldMultiplier: 1.05
+        requireHardware: true
+
+  - id: djenkines
+    name: "Djenkines PipeLaine"
+    type: ci-cd
+    description: "Jenkins / GitLab CI. Pipeline as Code. Le Jenkinsfile fait 300 lignes. Il y a 8 stages. 2 marchent."
+    global: true
+    versions:
+      - id: djenkines-v1
+        name: "PipeLaine"
+        unlockAtTrimester: 13.2
+        baseYield: null
+        deployCost: 100
+        deployTime: 120
+        recurringCost: 0
+        crashRate: 0.0012
+        restartDuration: 60
+        yieldMultiplier: 1.06
+        requireHardware: true
+
+  - id: minio-storage
+    name: "MinioStorague"
+    type: storage
+    description: "MinIO. S3-compatible. Self-hosted. Les credentials sont dans le docker-compose. En clair."
+    global: true
+    versions:
+      - id: minio-v1
+        name: "Self-Hosted"
+        unlockAtTrimester: 13.5
+        baseYield: 3.5
+        deployCost: 0
+        deployTime: 30
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 15
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: datadogue
+    name: "DataDogue Lite"
+    type: monitoring
+    description: "Datadog SaaS. APM. Logs. Metrics. Traces. La facture augmente de 40% chaque mois. Personne ne comprend."
+    global: true
+    versions:
+      - id: datadogue-lite
+        name: "Lite SaaS"
+        unlockAtTrimester: 13.8
+        baseYield: null
+        deployCost: 0
+        deployTime: 30
+        recurringCost: 18.0
+        crashRate: 0.0002
+        restartDuration: 5
+        yieldMultiplier: 1.10
+        requireHardware: false
+
+  - id: dinahmobd
+    name: "DinahmoBD Managed"
+    type: managed-db
+    description: "AWS DynamoDB. NoSQL serverless. Capacity Units. Read Units. Write Units. Personne ne sait calculer."
+    global: true
+    versions:
+      - id: dinahmobd-managed
+        name: "Managed"
+        unlockAtTrimester: 14.0
+        baseYield: 10.5
+        deployCost: 0
+        deployTime: 60
+        recurringCost: 15.0
+        crashRate: 0.0003
+        restartDuration: 8
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  - id: sendgridosse
+    name: "SéndGridosse"
+    type: email
+    description: "SendGrid. Email delivery SaaS. 100 mails/jour gratuits. On dépasse le quota en 2h. On paie."
+    global: true
+    versions:
+      - id: sendgridosse-v1
+        name: "API"
+        unlockAtTrimester: 14.2
+        baseYield: null
+        deployCost: 0
+        deployTime: 10
+        recurringCost: 6.5
+        crashRate: 0.0002
+        restartDuration: 3
+        yieldMultiplier: 1.03
+        requireHardware: false
+
+  - id: lambdeau
+    name: "Lambdeau Fonktion"
+    type: serverless
+    description: "AWS Lambda. Serverless. Cold start 3 secondes. Timeout 15 minutes. Les logs sont dans CloudWatch."
+    global: true
+    versions:
+      - id: lambdeau-v1
+        name: "Fonktion"
+        unlockAtTrimester: 14.5
+        baseYield: 5.0
+        deployCost: 0
+        deployTime: 20
+        recurringCost: 8.0
+        crashRate: 0.0008
+        restartDuration: 5
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  # ==========================================
+  # TIER 8 — 2020, GitOps/ServiceMesh (Trimestre 14.5-16)
+  # ==========================================
+
+  - id: simphonie
+    versions:
+      - id: simphonie-v5
+        name: "5.0 Attributz"
+        unlockAtTrimester: 14.5
+        baseYield: 19.0
+        deployCost: 0
+        deployTime: 25
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 20
+        yieldMultiplier: 1.0
+        requireHardware: true
+        deprecatedAtTrimester: 10.0  # EOL Nov 2024
+
+  - id: rustace
+    name: "RustaCé"
+    type: backend
+    description: "Rust Actix-web. Memory safe. Thread safe. Borrow checker. Le compilateur refuse 80% du code. C'est normal."
+    global: false
+    versions:
+      - id: rustace-actix
+        name: "Actixe"
+        unlockAtTrimester: 15.0
+        baseYield: 22.0
+        deployCost: 0
+        deployTime: 35
+        recurringCost: 0
+        crashRate: 0.0005
+        restartDuration: 6
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: frankenphp
+    name: "FrankenPéHache"
+    type: backend
+    description: "FrankenPHP alpha. PHP + Go. Le serveur HTTP le plus rapide. Personne ne sait comment ça marche."
+    global: false
+    versions:
+      - id: frankenphp-alpha
+        name: "Alpha"
+        unlockAtTrimester: 15.3
+        baseYield: 20.5
+        deployCost: 0
+        deployTime: 20
+        recurringCost: 0
+        crashRate: 0.0012
+        restartDuration: 10
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: kaddybal
+    name: "KaddyBal"
+    type: reverse-proxy
+    description: "Caddy 2.0. HTTPS automatique. Let's Encrypt intégré. La config est en JSON. C'est lisible. Révolutionnaire."
+    global: false
+    versions:
+      - id: kaddybal-v2
+        name: "2.0"
+        unlockAtTrimester: 15.5
+        baseYield: null
+        deployCost: 0
+        deployTime: 15
+        recurringCost: 0
+        crashRate: 0.0004
+        restartDuration: 8
+        yieldMultiplier: 1.20
+        requireHardware: true
+
+  - id: istiaux
+    name: "Istiaux Mesh"
+    type: service-mesh
+    description: "Istio 1.6. Service Mesh. Envoy sidecar partout. La latence augmente de 5ms. C'est acceptable."
+    global: true
+    versions:
+      - id: istiaux-v16
+        name: "1.6 Mesh"
+        unlockAtTrimester: 15.8
+        baseYield: null
+        deployCost: 800
+        deployTime: 240
+        recurringCost: 0
+        crashRate: 0.0010
+        restartDuration: 90
+        yieldMultiplier: 1.15
+        requireHardware: true
+
+  - id: arguecede
+    name: "ArgueCéDé GitOpse"
+    type: ci-cd
+    description: "ArgoCD 1.5. GitOps. Le cluster sync automatiquement. Sauf quand le YAML est mal indenté."
+    global: true
+    versions:
+      - id: arguecede-v15
+        name: "GitOpse"
+        unlockAtTrimester: 16.0
+        baseYield: null
+        deployCost: 300
+        deployTime: 120
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 50
+        yieldMultiplier: 1.08
+        requireHardware: true
+
+  - id: terraforme
+    name: "TerraForme IaC"
+    type: ci-cd
+    description: "Terraform 0.13. Infrastructure as Code. Le state est remote. Sauf quand on oublie le backend."
+    global: true
+    versions:
+      - id: terraforme-v013
+        name: "IaC"
+        unlockAtTrimester: 16.2
+        baseYield: null
+        deployCost: 200
+        deployTime: 90
+        recurringCost: 0
+        crashRate: 0.0010
+        restartDuration: 40
+        yieldMultiplier: 1.06
+        requireHardware: true
+
+  - id: postgres
+    versions:
+      - id: postgres-v13
+        name: "13 Partitionné"
+        unlockAtTrimester: 16.5
+        baseYield: 14.0
+        deployCost: 200
+        deployTime: 50
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 45
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: timeskaildb
+    name: "TimeskailDB"
+    type: database
+    description: "TimescaleDB. PostgreSQL pour time series. Les données sont partitionnées. Automatiquement. C'est magique."
+    global: false
+    versions:
+      - id: timeskaildb-v1
+        name: "Time Series"
+        unlockAtTrimester: 16.8
+        baseYield: 11.5
+        deployCost: 150
+        deployTime: 60
+        recurringCost: 0
+        crashRate: 0.0009
+        restartDuration: 40
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: authentikextra
+    name: "AuthentikExtra"
+    type: auth
+    description: "Authentik 0.9. IDP moderne. OIDC. SAML. LDAP. Flows configurables. L'UI est jolie. Ça marche."
+    global: true
+    versions:
+      - id: authentikextra-v09
+        name: "0.9"
+        unlockAtTrimester: 17.0
+        baseYield: null
+        deployCost: 100
+        deployTime: 70
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 35
+        yieldMultiplier: 1.06
+        requireHardware: true
+
+  - id: vaultsecret
+    name: "VaultSecretz"
+    type: secret
+    description: "HashiCorp Vault. Secret management. Encryption as a Service. Les secrets sont chiffrés. Le master key est dans Slack."
+    global: true
+    versions:
+      - id: vaultsecret-v1
+        name: "Self-Hosted"
+        unlockAtTrimester: 17.2
+        baseYield: null
+        deployCost: 250
+        deployTime: 100
+        recurringCost: 0
+        crashRate: 0.0006
+        restartDuration: 60
+        yieldMultiplier: 1.04
+        requireHardware: true
+
+  - id: guithub-actions
+    name: "GuitHub Aksionne"
+    type: ci-cd
+    description: "GitHub Actions. CI/CD intégré. 2000 minutes gratuites. On dépasse en 1 semaine. On paie."
+    global: true
+    versions:
+      - id: guithub-actions-v1
+        name: "Workflows"
+        unlockAtTrimester: 17.5
+        baseYield: null
+        deployCost: 0
+        deployTime: 20
+        recurringCost: 9.0
+        crashRate: 0.0005
+        restartDuration: 15
+        yieldMultiplier: 1.08
+        requireHardware: false
+
+  - id: sentryerreurz
+    name: "SéntryErreurz SaaS"
+    type: monitoring
+    description: "Sentry. Error tracking. Les exceptions remontent. Toutes. 10 000 par jour. On filtre après."
+    global: true
+    versions:
+      - id: sentryerreurz-saas
+        name: "SaaS"
+        unlockAtTrimester: 17.8
+        baseYield: null
+        deployCost: 0
+        deployTime: 15
+        recurringCost: 12.0
+        crashRate: 0.0003
+        restartDuration: 5
+        yieldMultiplier: 1.09
+        requireHardware: false
+
+  - id: kafquoi-cloud
+    name: "KafQuoiCloud Managed"
+    type: message-queue
+    description: "Confluent Cloud. Kafka managé. Schema Registry. ksqlDB. La facture explose. Personne ne comprend."
+    global: true
+    versions:
+      - id: kafquoi-cloud-managed
+        name: "Managed"
+        unlockAtTrimester: 18.0
+        baseYield: 12.0
+        deployCost: 0
+        deployTime: 90
+        recurringCost: 22.0
+        crashRate: 0.0004
+        restartDuration: 20
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  - id: kloudflair-workers
+    name: "KloudFlair Workerot"
+    type: serverless
+    description: "Cloudflare Workers. Edge computing. 50ms CPU limit. Le code tourne sur 200 datacenters. Ou 0. Aléatoire."
+    global: true
+    versions:
+      - id: kloudflair-workers-v1
+        name: "Workers"
+        unlockAtTrimester: 18.2
+        baseYield: 6.5
+        deployCost: 0
+        deployTime: 10
+        recurringCost: 5.0
+        crashRate: 0.0006
+        restartDuration: 3
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  - id: launchdarkeau
+    name: "LaunchDarkeau Feature Flag"
+    type: feature-flag
+    description: "LaunchDarkly. Feature flags as a Service. Toggle features sans déployer. Le toggle du toggle coûte 500$/mois."
+    global: true
+    versions:
+      - id: launchdarkeau-v1
+        name: "SaaS"
+        unlockAtTrimester: 18.5
+        baseYield: null
+        deployCost: 0
+        deployTime: 25
+        recurringCost: 14.0
+        crashRate: 0.0004
+        restartDuration: 5
+        yieldMultiplier: 1.05
+        requireHardware: false
+
+  # ==========================================
+  # TIER 9 — 2022, Platform Eng (Trimestre 18.5-20)
+  # ==========================================
+
+  - id: bunsse-js
+    name: "Bunsse.js"
+    type: backend
+    description: "Bun 1.0. Node killer. Zig-powered. 3x plus rapide. Les benchmarks sont faits par l'auteur. On y croit."
+    global: false
+    versions:
+      - id: bunsse-v1
+        name: "1.0"
+        unlockAtTrimester: 18.5
+        baseYield: 25.0
+        deployCost: 0
+        deployTime: 18
+        recurringCost: 0
+        crashRate: 0.0010
+        restartDuration: 8
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: simphonie
+    versions:
+      - id: simphonie-v6-franken
+        name: "6.0 FrankenPéHache"
+        unlockAtTrimester: 19.0
+        baseYield: 24.0
+        deployCost: 0
+        deployTime: 22
+        recurringCost: 0
+        crashRate: 0.0007
+        restartDuration: 12
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: meilleurerecherche
+    name: "MeilleureRecherche"
+    type: search
+    description: "Meilisearch 1.0. Search rapide. Written in Rust. Typo-tolerant. L'index tient en RAM. 32 Go minimum."
+    global: false
+    versions:
+      - id: meilleurerecherche-v1
+        name: "1.0"
+        unlockAtTrimester: 19.3
+        baseYield: 8.5
+        deployCost: 100
+        deployTime: 35
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 15
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: typesense
+    name: "TypeSensé"
+    type: search
+    description: "Typesense 0.24. Algolia alternatif. C++. Index distribué. La doc est meilleure qu'Elasticsearch. Miracle."
+    global: false
+    versions:
+      - id: typesense-v024
+        name: "0.24"
+        unlockAtTrimester: 19.5
+        baseYield: 9.0
+        deployCost: 120
+        deployTime: 40
+        recurringCost: 0
+        crashRate: 0.0007
+        restartDuration: 18
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: natzseau
+    name: "NATzSeau"
+    type: message-queue
+    description: "NATS.io 2.0. Message broker Go. Pub/sub simple. 11 lignes de code pour produire. Ça marche."
+    global: false
+    versions:
+      - id: natzseau-v2
+        name: "2.0"
+        unlockAtTrimester: 19.8
+        baseYield: 7.5
+        deployCost: 0
+        deployTime: 25
+        recurringCost: 0
+        crashRate: 0.0006
+        restartDuration: 10
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: pulsarkai
+    name: "PulsarKaï"
+    type: message-queue
+    description: "Apache Pulsar 2.10. Multi-tenant. Geo-replication. Le setup prend 2 jours. La doc fait 400 pages."
+    global: false
+    versions:
+      - id: pulsarkai-v210
+        name: "2.10"
+        unlockAtTrimester: 20.0
+        baseYield: 13.0
+        deployCost: 400
+        deployTime: 180
+        recurringCost: 0
+        crashRate: 0.0012
+        restartDuration: 60
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: cilyoum-mesh
+    name: "Cilyoum Mesh eBPF"
+    type: service-mesh
+    description: "Cilium. eBPF-powered. Kernel-level networking. Personne ne comprend. Ça marche. On ne touche plus."
+    global: true
+    versions:
+      - id: cilyoum-ebpf
+        name: "eBPF"
+        unlockAtTrimester: 20.2
+        baseYield: null
+        deployCost: 1000
+        deployTime: 300
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 100
+        yieldMultiplier: 1.18
+        requireHardware: true
+
+  - id: linkerde
+    name: "LinkerDé"
+    type: service-mesh
+    description: "Linkerd 2.0. Le service mesh simple. Rust-based. Moins lourd qu'Istio. Moins de features aussi."
+    global: true
+    versions:
+      - id: linkerde-v2
+        name: "2.0"
+        unlockAtTrimester: 20.5
+        baseYield: null
+        deployCost: 600
+        deployTime: 180
+        recurringCost: 0
+        crashRate: 0.0007
+        restartDuration: 70
+        yieldMultiplier: 1.14
+        requireHardware: true
+
+  - id: openntelemetrux
+    name: "OpennTéléMétrux"
+    type: monitoring
+    description: "OpenTelemetry 1.0. Observability standard. Traces. Metrics. Logs. 3 backends. 7 exporters. 0 documentation."
+    global: true
+    versions:
+      - id: openntelemetrux-v1
+        name: "1.0"
+        unlockAtTrimester: 20.8
+        baseYield: null
+        deployCost: 350
+        deployTime: 150
+        recurringCost: 0
+        crashRate: 0.0009
+        restartDuration: 50
+        yieldMultiplier: 1.12
+        requireHardware: true
+
+  - id: kuzubernetes
+    versions:
+      - id: kuzubernetes-operators
+        name: "OpéraTeur"
+        unlockAtTrimester: 21.0
+        baseYield: null
+        deployCost: 800
+        deployTime: 360
+        recurringCost: 0
+        crashRate: 0.0012
+        restartDuration: 150
+        yieldMultiplier: 1.15
+        requireHardware: true
+
+  - id: unleashflag-os
+    name: "UnléashFlag OS"
+    type: feature-flag
+    description: "Unleash self-hosted. Feature toggles open source. L'UI est moche. C'est gratuit. On accepte."
+    global: true
+    versions:
+      - id: unleashflag-os-v1
+        name: "Self-Hosted"
+        unlockAtTrimester: 21.2
+        baseYield: null
+        deployCost: 150
+        deployTime: 60
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 30
+        yieldMultiplier: 1.04
+        requireHardware: true
+
+  - id: planetskale
+    name: "PlanetSkale Vitesse"
+    type: managed-db
+    description: "PlanetScale. MySQL serverless. Branching. Migrations sans downtime. Le CLI est plus rapide que le web UI."
+    global: true
+    versions:
+      - id: planetskale-vitesse
+        name: "Vitesse"
+        unlockAtTrimester: 21.5
+        baseYield: 16.0
+        deployCost: 0
+        deployTime: 45
+        recurringCost: 28.0
+        crashRate: 0.0003
+        restartDuration: 10
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  - id: datadogue
+    versions:
+      - id: datadogue-enterprise
+        name: "Enterprize"
+        unlockAtTrimester: 21.8
+        baseYield: null
+        deployCost: 0
+        deployTime: 60
+        recurringCost: 45.0
+        crashRate: 0.0002
+        restartDuration: 5
+        yieldMultiplier: 1.15
+        requireHardware: false
+
+  - id: rezendoh
+    name: "RézéndOh"
+    type: email
+    description: "Resend.com. Email for developers. React Email templates. Les devs peuvent enfin coder des mails."
+    global: true
+    versions:
+      - id: rezendoh-v1
+        name: "API"
+        unlockAtTrimester: 22.0
+        baseYield: null
+        deployCost: 0
+        deployTime: 8
+        recurringCost: 8.5
+        crashRate: 0.0002
+        restartDuration: 3
+        yieldMultiplier: 1.04
+        requireHardware: false
+
+  - id: neonbd
+    name: "NéonBD Serverless"
+    type: managed-db
+    description: "Neon DB. Postgres serverless. Cold start 500ms. Branching gratuit. Scale to zero. Le ping aussi."
+    global: true
+    versions:
+      - id: neonbd-serverless
+        name: "Serverless"
+        unlockAtTrimester: 22.2
+        baseYield: 14.5
+        deployCost: 0
+        deployTime: 30
+        recurringCost: 20.0
+        crashRate: 0.0005
+        restartDuration: 8
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  - id: bunkeurcdn
+    name: "BunkeurCDN"
+    type: cdn
+    description: "BunnyCDN. CDN pas cher. 200 PoP. Support instant. On se demande comment c'est rentable."
+    global: true
+    versions:
+      - id: bunkeurcdn-v1
+        name: "Edge"
+        unlockAtTrimester: 22.5
+        baseYield: null
+        deployCost: 0
+        deployTime: 20
+        recurringCost: 6.0
+        crashRate: 0.0002
+        restartDuration: 3
+        yieldMultiplier: 1.22
+        requireHardware: false
+
+  - id: kourakost-optimizer
+    name: "KouraKostOptimizeur"
+    type: financial
+    description: "FinOps SaaS. Analyse les coûts. Suggère des optimisations. Coûte plus cher que ce qu'il économise."
+    global: true
+    versions:
+      - id: kourakost-v1
+        name: "FinOps"
+        unlockAtTrimester: 22.8
+        baseYield: null
+        deployCost: 0
+        deployTime: 120
+        recurringCost: -25  # Réduit les coûts globaux... théoriquement
+        crashRate: 0.0005
+        restartDuration: 30
+        yieldMultiplier: 0.92  # Réduit légèrement le yield mais optimise les coûts
+        requireHardware: false
+
+  # ==========================================
+  # TIER 10 — 2024, AI-augmented (Trimestre 23-25)
+  # ==========================================
+
+  - id: simphonie
+    versions:
+      - id: simphonie-v7
+        name: "7.0 Ultimaute"
+        unlockAtTrimester: 23.0
+        baseYield: 28.0
+        deployCost: 0
+        deployTime: 20
+        recurringCost: 0
+        crashRate: 0.0006
+        restartDuration: 15
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: rustace
+    versions:
+      - id: rustace-axum
+        name: "Axuome"
+        unlockAtTrimester: 23.5
+        baseYield: 30.0
+        deployCost: 0
+        deployTime: 30
+        recurringCost: 0
+        crashRate: 0.0004
+        restartDuration: 5
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: honnojs
+    name: "HonnoJS EdgeEdge"
+    type: backend
+    description: "Hono.js. Edge-first framework. Tourne sur Cloudflare Workers. Sur Deno. Sur Bun. Sur tout."
+    global: false
+    versions:
+      - id: honnojs-edge
+        name: "EdgeEdge"
+        unlockAtTrimester: 24.0
+        baseYield: 27.0
+        deployCost: 0
+        deployTime: 15
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 6
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: backstagueux
+    name: "BackStagueux IDP"
+    type: platform
+    description: "Backstage. Internal Developer Portal. Spotify-made. Catalogue de services. Personne ne le met à jour."
+    global: true
+    versions:
+      - id: backstagueux-idp
+        name: "IDP"
+        unlockAtTrimester: 24.5
+        baseYield: null
+        deployCost: 1200
+        deployTime: 480
+        recurringCost: 0
+        crashRate: 0.0010
+        restartDuration: 120
+        yieldMultiplier: 1.20
+        requireHardware: true
+
+  - id: valkeiecache
+    name: "ValkéieCache"
+    type: cache
+    description: "Valkey 7. Redis fork. Licence BSD. Linux Foundation. Redis Inc. n'est pas content. Personne ne comprend."
+    global: false
+    versions:
+      - id: valkeiecache-v7
+        name: "7.0"
+        unlockAtTrimester: 25.0
+        baseYield: 12.0
+        deployCost: 0
+        deployTime: 15
+        recurringCost: 0
+        crashRate: 0.0006
+        restartDuration: 8
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: dragonfliebd
+    name: "DragonFlieBD"
+    type: cache
+    description: "DragonflyDB. Redis API. Written in C++. 25x plus rapide. Les benchmarks sont... optimistes."
+    global: false
+    versions:
+      - id: dragonfliebd-v1
+        name: "Cache Beast"
+        unlockAtTrimester: 25.3
+        baseYield: 15.0
+        deployCost: 200
+        deployTime: 20
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 12
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: redpandamq
+    name: "RedPandaMQ Bête"
+    type: message-queue
+    description: "Redpanda. Kafka API. C++. Pas de JVM. Pas de Zookeeper. Ça démarre en 2 secondes. Magique."
+    global: false
+    versions:
+      - id: redpandamq-beast
+        name: "Bête"
+        unlockAtTrimester: 25.5
+        baseYield: 16.5
+        deployCost: 350
+        deployTime: 50
+        recurringCost: 0
+        crashRate: 0.0007
+        restartDuration: 15
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: klikhousse
+    versions:
+      - id: klikhousse-v24
+        name: "24 OLAP"
+        unlockAtTrimester: 25.8
+        baseYield: 18.0
+        deployCost: 300
+        deployTime: 80
+        recurringCost: 0
+        crashRate: 0.0010
+        restartDuration: 50
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: kadrantvecto
+    name: "KadrantVecto"
+    type: database
+    description: "Qdrant. Vector DB. Embeddings. Similarity search. L'IA a besoin de bases de données maintenant."
+    global: false
+    versions:
+      - id: kadrantvecto-v1
+        name: "Vector"
+        unlockAtTrimester: 26.0
+        baseYield: 10.0
+        deployCost: 500
+        deployTime: 90
+        recurringCost: 0
+        crashRate: 0.0012
+        restartDuration: 40
+        yieldMultiplier: 1.0
+        requireHardware: true
+
+  - id: grapphanetotal
+    name: "GrapphaneTotal LGTM"
+    type: monitoring
+    description: "Grafana LGTM stack. Loki + Grafana + Tempo + Mimir. Observability complète. 12 Go de RAM minimum."
+    global: true
+    versions:
+      - id: grapphanetotal-lgtm
+        name: "LGTM"
+        unlockAtTrimester: 26.5
+        baseYield: null
+        deployCost: 800
+        deployTime: 240
+        recurringCost: 0
+        crashRate: 0.0008
+        restartDuration: 80
+        yieldMultiplier: 1.18
+        requireHardware: true
+
+  - id: pomerioum
+    name: "PoméRioum ZéroTruste"
+    type: auth
+    description: "Pomerium / Zitadel. Zero Trust. Identity-aware proxy. Personne ne peut se connecter. Pas même les admins."
+    global: true
+    versions:
+      - id: pomerioum-zerotrust
+        name: "ZéroTruste"
+        unlockAtTrimester: 27.0
+        baseYield: null
+        deployCost: 400
+        deployTime: 180
+        recurringCost: 0
+        crashRate: 0.0007
+        restartDuration: 60
+        yieldMultiplier: 1.08
+        requireHardware: true
+
+  - id: karpanteurk8z
+    name: "KarpanteurK8z"
+    type: orchestration
+    description: "Karpenter. Kubernetes autoscaler. Provisionne des nodes automatiquement. Facture AWS aussi."
+    global: true
+    versions:
+      - id: karpanteurk8z-v1
+        name: "Autoscale"
+        unlockAtTrimester: 27.5
+        baseYield: null
+        deployCost: 600
+        deployTime: 200
+        recurringCost: 0
+        crashRate: 0.0010
+        restartDuration: 90
+        yieldMultiplier: 1.16
+        requireHardware: true
+
+  - id: daguioci
+    name: "DaguioCI"
+    type: ci-cd
+    description: "Dagger.io. CI/CD as Code. Go/Python/TypeScript. Les pipelines sont reproductibles. En théorie."
+    global: true
+    versions:
+      - id: daguioci-v1
+        name: "Pipelines"
+        unlockAtTrimester: 28.0
+        baseYield: null
+        deployCost: 250
+        deployTime: 100
+        recurringCost: 0
+        crashRate: 0.0009
+        restartDuration: 45
+        yieldMultiplier: 1.10
+        requireHardware: true
+
+  - id: gptifie
+    name: "GPTifié API"
+    type: serverless
+    description: "OpenAI / Bedrock API. L'IA génère du code. Buggy. On debug. L'IA génère du debug. Plus buggy."
+    global: true
+    versions:
+      - id: gptifie-api
+        name: "AI API"
+        unlockAtTrimester: 28.5
+        baseYield: 20.0
+        deployCost: 0
+        deployTime: 5
+        recurringCost: 35.0  # Très cher
+        crashRate: 0.0015  # IA = instable
+        restartDuration: 3
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  - id: tursolibsql
+    name: "TursoLibSQL Edge"
+    type: managed-db
+    description: "Turso. LibSQL edge DB. SQLite distribué. Les données sont au edge. Latence 10ms. Cohérence éventuelle."
+    global: true
+    versions:
+      - id: tursolibsql-edge
+        name: "Edge"
+        unlockAtTrimester: 29.0
+        baseYield: 17.0
+        deployCost: 0
+        deployTime: 25
+        recurringCost: 18.0
+        crashRate: 0.0006
+        restartDuration: 5
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  - id: upstashrediss
+    name: "UpstashRédiss Cloud"
+    type: cache
+    description: "Upstash Redis. Serverless. HTTP-based. REST API pour Redis. Les puristes pleurent. Ça marche."
+    global: true
+    versions:
+      - id: upstashrediss-cloud
+        name: "Cloud"
+        unlockAtTrimester: 29.5
+        baseYield: 11.0
+        deployCost: 0
+        deployTime: 10
+        recurringCost: 12.0
+        crashRate: 0.0004
+        restartDuration: 4
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  - id: inngueste
+    name: "InnguésteEvent"
+    type: message-queue
+    description: "Inngest. Event-driven serverless. Workflow orchestration. Les retries sont automatiques. Les coûts aussi."
+    global: true
+    versions:
+      - id: inngueste-event
+        name: "Event Mesh"
+        unlockAtTrimester: 30.0
+        baseYield: 13.5
+        deployCost: 0
+        deployTime: 20
+        recurringCost: 16.0
+        crashRate: 0.0005
+        restartDuration: 8
+        yieldMultiplier: 1.0
+        requireHardware: false
+
+  - id: trigueurdev
+    name: "TrigueurDév Workerot"
+    type: ci-cd
+    description: "Trigger.dev. Background jobs as a Service. Long-running tasks. Timeout 2h. Coût par seconde. On optimise pas."
+    global: true
+    versions:
+      - id: trigueurdev-workers
+        name: "Workerot"
+        unlockAtTrimester: 30.5
+        baseYield: null
+        deployCost: 0
+        deployTime: 15
+        recurringCost: 11.0
+        crashRate: 0.0006
+        restartDuration: 10
+        yieldMultiplier: 1.07
+        requireHardware: false
+
+  - id: oktawee
+    name: "OktaWée Enterprise SSO"
+    type: auth
+    description: "Okta / WorkOS. Enterprise SSO. SAML. SCIM. Provisioning. Le contrat se négocie au téléphone. Prix sur devis."
+    global: true
+    versions:
+      - id: oktawee-enterprise
+        name: "Enterprise SSO"
+        unlockAtTrimester: 31.0
+        baseYield: null
+        deployCost: 0
+        deployTime: 480  # Très long provisioning enterprise
+        recurringCost: 50.0  # Très cher
+        crashRate: 0.0002
+        restartDuration: 15
+        yieldMultiplier: 1.10
+        requireHardware: false
+
+  - id: infissikal
+    name: "InfissiKal Sekretz"
+    type: secret
+    description: "Infisical. Secret management open source. Les secrets sont chiffrés. Le master password est dans .env."
+    global: true
+    versions:
+      - id: infissikal-secrets
+        name: "Sekretz"
+        unlockAtTrimester: 31.5
+        baseYield: null
+        deployCost: 300
+        deployTime: 120
+        recurringCost: 0
+        crashRate: 0.0007
+        restartDuration: 50
+        yieldMultiplier: 1.05
+        requireHardware: true
+
+  - id: unleashflag
+    versions:
+      - id: unleashflag-enterprise
+        name: "Enterprize"
+        unlockAtTrimester: 32.0
+        baseYield: null
+        deployCost: 0
+        deployTime: 60
+        recurringCost: 25.0
+        crashRate: 0.0003
+        restartDuration: 8
+        yieldMultiplier: 1.08
+        requireHardware: false
+
+# Notes de conception:
+# - 114 services répartis sur 10 tiers (T1-T10)
+# - unlockAtTrimester en float pour déblocage progressif
+# - baseYield = null pour services d'infrastructure (monitoring, proxy, etc.)
+# - requireHardware = false pour les SaaS
+# - global = true pour les services qui s'appliquent à tous les projets
+# - deprecatedAtTrimester marque l'obsolescence (crashRate augmente après)
+# - recurringCost négatif pour les financial services (revenus passifs)
+# - Les services SaaS ont deployTime court mais recurringCost élevé
+# - Les services on-prem ont deployTime long mais recurringCost = 0
+# - yieldMultiplier > 1.0 pour services qui boostent la production

@@ -1,0 +1,455 @@
+# KOURASKS - Configuration Mails
+# Emails narratifs liés aux événements du jeu
+# Les mails bloquent le jeu et nécessitent une réponse
+
+mails:
+  # ==========================================
+  # Mails de lancement de projets
+  # ==========================================
+
+  - id: mail-welcome
+    name: "Bienvenue chez KouraTech"
+    description: |
+      Bienvenue dans l'équipe infrastructure !
+
+      Je suis ravi de vous compter parmi nous. Votre mission est simple : faire tourner notre site vitrine.
+
+      J'ai récupéré un vieux serveur dans le couloir. Le BIOS date de 1994 mais il marche encore. C'est tout ce qu'on a pour l'instant.
+
+      Faites de votre mieux. L'avenir de l'entreprise en dépend. Enfin... mon site web surtout.
+
+      — Jean-Michel Kouratec, PDG
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtTrimester: 0
+    options:
+      - id: welcome-ok
+        name: "Compris, je m'y mets"
+        description: "Accepter la mission et commencer"
+
+  - id: mail-site-v1-launched
+    name: "Le site est en ligne !"
+    description: |
+      Excellent travail !
+
+      Le site est en ligne. Ma fille a déjà commenté sur Instagram. 47 vues en 3 heures. On est viraux.
+
+      J'ai eu une idée : et si on ajoutait un compteur de visites en temps réel ? Les gens adorent voir que d'autres gens regardent.
+
+      Préparez-vous à scaler. J'ai commandé 500 cartes de visite avec l'URL.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: site-vitrine-v1-launched
+    options:
+      - id: site-v1-ok
+        name: "On va gérer"
+
+  - id: mail-forum-launch
+    name: "Nouveau projet : Forum Community"
+    description: |
+      J'ai rencontré Bernard au golf. Il m'a parlé des forums phpBB.
+
+      Apparemment, c'est l'avenir de la communication en ligne. Je veux le même.
+
+      Budget : 800K. Timeline : avant la fin du trimestre. Questions : aucune.
+
+      Ah, et gardez le site vitrine en ligne. Ma fille check toujours les stats.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: site-vitrine-v15-launched
+    options:
+      - id: forum-ok
+        name: "C'est parti"
+
+  - id: mail-ecommerce-launch
+    name: "On se lance dans l'e-commerce"
+    description: |
+      Amazon gagne des milliards. On va faire pareil.
+
+      J'ai acheté un stock de 5 000 porte-clés USB personnalisés KouraTech. Il faut les vendre. Vite.
+
+      Créez une boutique en ligne. Paiement CB. Tunnel de conversion optimisé. J'ai lu un article sur le growth hacking.
+
+      Les porte-clés sont dans mon garage. Livraison sous 6 semaines.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: forum-v1-launched
+    options:
+      - id: ecommerce-ok
+        name: "On va vendre ces porte-clés"
+
+  - id: mail-saas-launch
+    name: "L'ère du SaaS"
+    description: |
+      Les investisseurs ne parlent que de SaaS. Recurring revenue. ARR. MRR. J'ai fait un PowerPoint.
+
+      On va créer un outil de gestion de projet. Comme Jira, mais en mieux. Ou en moins bien, on verra.
+
+      Budget : 3M de K. C'est un investissement stratégique. Le business plan prévoit la rentabilité au Q47.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: ecommerce-v1-launched
+    options:
+      - id: saas-ok
+        name: "Le SaaS, c'est l'avenir"
+
+  - id: mail-mobile-launch
+    name: "Mobile First"
+    description: |
+      Tout le monde est sur mobile maintenant. Mon petit-fils ne quitte pas son iPhone.
+
+      On lance une app. iOS et Android. Backend API RESTful. J'ai lu la doc Swagger.
+
+      L'app permet de... on décidera plus tard. L'important c'est d'être sur mobile.
+
+      Budget : 5M. Timeline : hier.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: saas-v1-launched
+    options:
+      - id: mobile-ok
+        name: "Mobile first, c'est noté"
+
+  - id: mail-streaming-launch
+    name: "Netflix mais en mieux"
+    description: |
+      J'ai regardé un documentaire sur Netflix hier soir. Leur infra est impressionnante.
+
+      On va faire une plateforme de VOD. J'ai acheté les droits de 3 films d'auteur que personne ne connaît. 200€ le lot.
+
+      Prévoyez large pour le CDN. Les vidéos font 4K. J'ai pas encore compris ce que c'est mais ça fait pro.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: streaming-v1-launched
+    options:
+      - id: streaming-ok
+        name: "On va streamer"
+
+  - id: mail-fintech-launch
+    name: "La finance, c'est lucratif"
+    description: |
+      Les fintech lèvent des centaines de millions. On va faire un payment gateway.
+
+      PCI-DSS compliant. Chiffrement end-to-end. Audit de sécurité. J'ai imprimé un PDF sur la cryptographie, c'est fascinant.
+
+      Budget illimité. C'est stratégique. Les cartes bancaires c'est l'avenir.
+
+      Ah oui, et il faut que ça marche 24/7. Les gens payent la nuit aussi apparemment.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: fintech-v1-launched
+    options:
+      - id: fintech-ok
+        name: "On va gérer l'argent des gens"
+
+  - id: mail-iot-launch
+    name: "L'Internet des Objets"
+    description: |
+      IoT. Internet of Things. J'ai vu ça au CES de Las Vegas.
+
+      On va collecter des données de capteurs. 10 000 capteurs. Peut-être plus. Les données arrivent en temps réel.
+
+      Je ne sais pas encore ce qu'on va mesurer, mais les données c'est le pétrole du 21ème siècle. J'ai lu ça dans Les Échos.
+
+      Kafka. ClickHouse. Time series. Mettez tout ça en place.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: iot-v1-launched
+    options:
+      - id: iot-ok
+        name: "IoT, c'est parti"
+
+  - id: mail-social-launch
+    name: "Le réseau social du futur"
+    description: |
+      Twitter c'est fini. Facebook c'est has-been. On va créer LE réseau social de demain.
+
+      Posts. Likes. Retweets. Stories. Reels. J'ai une liste de 47 features. Toutes prioritaires.
+
+      Budget : 15M. Les VC adorent les réseaux sociaux. On lèvera une série A au T12.
+
+      L'algorithme ? On verra plus tard. Pour l'instant il faut que ça scale.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: social-v1-launched
+    options:
+      - id: social-ok
+        name: "Le prochain Facebook"
+
+  - id: mail-aiml-launch
+    name: "L'Intelligence Artificielle"
+    description: |
+      L'IA va changer le monde. ChatGPT. Midjourney. Stable Diffusion. J'ai tout testé.
+
+      On va créer une plateforme ML. Entraînement de modèles. Inférence. APIs. Vector DB pour le RAG.
+
+      Je ne sais pas ce que c'est le RAG, mais c'est dans tous les pitchs deck que je reçois.
+
+      Budget : 30M. C'est l'avenir. Peut-être.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: aiml-v1-launched
+    options:
+      - id: aiml-ok
+        name: "L'IA c'est l'avenir"
+
+  # ==========================================
+  # Mails de migration forcée
+  # ==========================================
+
+  - id: mail-site-upgrade
+    name: "Le site est trop lent"
+    description: |
+      Ma fille s'est plainte. Le site met 8 secondes à charger.
+
+      Il faut un reverse proxy. Nginx. HAProxy. Je ne sais pas. Choisissez.
+
+      Vous avez 2 heures. Elle veut poster sur Instagram à 18h.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: site-vitrine-v15-launched
+    options:
+      - id: site-upgrade-ok
+        name: "On upgrade"
+
+  - id: mail-forum-spam
+    name: "Le forum est envahi de spam"
+    description: |
+      3 847 messages de spam. En une nuit. Des bots russes. Des liens vers des sites douteux.
+
+      Il faut un système de modération. Des filtres. Un CAPTCHA. Un storage pour les pièces jointes.
+
+      Bernard m'a appelé ce matin. Il n'est pas content. C'est votre faute apparemment.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: forum-v2-launched
+    options:
+      - id: forum-upgrade-ok
+        name: "On combat le spam"
+
+  # ==========================================
+  # Mails de crise (Kouraks = 0)
+  # ==========================================
+
+  - id: mail-zero-kouraks-1
+    name: "⚠️ ALERTE : Kouraks à zéro"
+    description: |
+      QUOI ?! Comment on peut être à 0 Kouraks ?!
+
+      Les serveurs tournent. Les projets sont en ligne. Et on ne gagne RIEN ?
+
+      Vérifiez la config. Redémarrez les services. Faites quelque chose !
+
+      J'ai débloqué un prêt d'urgence. 80 000 K. Taux d'intérêt : préférez ne pas savoir.
+
+      C'est la première et dernière fois.
+
+      — JM (pas content)
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: zero_kouraks
+    eventId: zero_kouraks_1
+    options:
+      - id: zero-1-ok
+        name: "Je règle le problème"
+
+  - id: mail-zero-kouraks-2
+    name: "⚠️⚠️ RE: Kouraks à zéro ENCORE"
+    description: |
+      C'EST PAS POSSIBLE.
+
+      On repassé à 0K. DEUX FOIS. EN UN MOIS.
+
+      J'ai appelé un consultant McKinsey. Il a analysé l'infra pendant 3 heures. Facture : 15 000€.
+
+      Sa recommandation : "Supprimer 2 services au hasard pour optimiser les coûts."
+
+      Il l'a fait. Maintenant les projets crashent. Mais au moins on économise de l'argent.
+
+      Réparez ça.
+
+      — JM (très pas content)
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: zero_kouraks_2
+    eventId: zero_kouraks_2
+    options:
+      - id: zero-2-ok
+        name: "Je vais tout réparer"
+
+  - id: mail-zero-kouraks-3-gameover
+    name: "C'est terminé"
+    description: |
+      Trois fois à 0 Kouraks. TROIS.
+
+      J'ai pris une décision difficile. L'infrastructure sera externalisée.
+
+      J'ai signé un contrat avec une ESN. Offshore. Madagascar. 6 ingénieurs à 800€/mois chacun.
+
+      Ils commencent lundi. Votre dernier jour est vendredi.
+
+      Merci pour votre service. Les RH vous contacteront pour la procédure.
+
+      PS : Le site de ma fille est down depuis ce matin. Vous pouvez le réparer avant de partir ?
+
+      — Jean-Michel Kouratec
+      CEO, KouraTech Industries
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: zero_kouraks_3
+    options: []  # Pas d'options = game over modal bloquante
+
+  # ==========================================
+  # Mails de strikes
+  # ==========================================
+
+  - id: mail-site-strike
+    name: "Le site n'atteint pas ses objectifs"
+    description: |
+      Les métriques du site sont en dessous des attentes.
+
+      On visait 10 000 vues par jour. On en a 342. Ma fille a plus de followers Instagram que notre site a de visiteurs.
+
+      C'est un avertissement. Encore un trimestre comme ça et on arrête le site.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: site-vitrine-strike
+    options:
+      - id: site-strike-ok
+        name: "Je vais optimiser"
+
+  - id: mail-forum-strike
+    name: "Le forum ne produit pas assez"
+    description: |
+      Le forum coûte plus cher qu'il ne rapporte.
+
+      Bernard m'a envoyé un tableau Excel. C'est marqué en rouge. Beaucoup de rouge.
+
+      Trouvez une solution. Ou on ferme le forum. Et Bernard sera encore moins content.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: forum-strike
+    options:
+      - id: forum-strike-ok
+        name: "Je vais améliorer les perfs"
+
+  - id: mail-ecommerce-strike
+    name: "La boutique ne vend rien"
+    description: |
+      247 visiteurs. 3 ventes. Des porte-clés à 5€ pièce.
+
+      Il m'en reste 4 997 dans le garage. Ma femme veut garer la voiture.
+
+      Soit le site se met à vendre, soit je les balance sur Leboncoin et on oublie ce projet.
+
+      — JM
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtEvent: ecommerce-strike
+    options:
+      - id: ecommerce-strike-ok
+        name: "Je vais booster les ventes"
+
+  # ==========================================
+  # Mails de succès
+  # ==========================================
+
+  - id: mail-milestone-100k
+    name: "🎉 100 000 Kouraks !"
+    description: |
+      100 000 Kouraks de production cumulée !
+
+      Je ne pensais pas qu'on y arriverait. Le comptable non plus. Ma femme m'avait conseillé d'arrêter.
+
+      On a prouvé qu'on avait raison. L'infrastructure, c'est rentable. Parfois.
+
+      Continuez comme ça. J'ai commandé des pizzas pour l'équipe. Elles arrivent jeudi prochain.
+
+      — JM (content)
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtTrimester: 5.0
+    options:
+      - id: milestone-100k-ok
+        name: "Merci chef !"
+
+  - id: mail-milestone-1M
+    name: "🎉 1 Million de Kouraks !"
+    description: |
+      UN MILLION !
+
+      J'ai fait un screenshot pour le mettre sur LinkedIn. 847 likes. Bernard est jaloux.
+
+      On scale. On itère. On disrupte. J'ai tous les mots du business à la mode.
+
+      Les investisseurs commencent à appeler. Série A en vue. Valorisation : 50M. On va être riches.
+
+      Enfin... moi surtout. Vous aurez une prime. Symbolique.
+
+      — JM (très content)
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtTrimester: 10.0
+    options:
+      - id: milestone-1M-ok
+        name: "On continue !"
+
+  - id: mail-milestone-10M
+    name: "🎉 10 Millions de Kouraks !"
+    description: |
+      DIX MILLIONS DE KOURAKS.
+
+      On est dans le top 100 des scale-ups françaises. Forbes veut faire un article.
+
+      J'ai dit oui. Interview prévue mardi. J'ai acheté un nouveau costume. Hugo Boss. 2 400€.
+
+      Tout ça grâce à notre infra solide. Enfin... solide... ça crash souvent quand même. Mais ça scale.
+
+      — JM (euphorique)
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtTrimester: 15.0
+    options:
+      - id: milestone-10M-ok
+        name: "On est des champions"
+
+  # ==========================================
+  # Mail de fin (victoire)
+  # ==========================================
+
+  - id: mail-endgame-victory
+    name: "🏆 Nous sommes arrivés au sommet"
+    description: |
+      50 millions de Kouraks. 10 projets en production. Une infra qui tient debout. La plupart du temps.
+
+      J'ai une annonce à faire : KouraTech est racheté.
+
+      Un GAFAM dont je ne peux pas divulguer le nom. Montant : 500 millions d'euros. Cash.
+
+      Vous avez bossé dur. L'infra a tenu. Malgré les crashes. Les migrations. Les nuits blanches. Les bugs en prod.
+
+      Vous recevrez une prime de 10 000€ et un MacBook Pro gravé "KouraTech 2024".
+
+      Félicitations. On a gagné. Enfin... surtout moi. Mais vous aussi un peu.
+
+      — Jean-Michel Kouratec
+      Ex-CEO, KouraTech Industries (acquired)
+    from: "Jean-Michel Kouratec <jm@kouratech.com>"
+    unlockAtTrimester: 20.0
+    options: []  # Pas d'options = modal de victoire bloquante
+
+# Notes de conception:
+# - Mails liés aux événements via unlockAtEvent (eventId des projets)
+# - Progression narrative humoristique
+# - Zero kouraks system: 3 mails progressifs (warning → consultant → game over)
+# - Strikes: 1 mail par strike, 3 strikes = projet failed
+# - Milestones positifs pour récompenser le joueur
+# - Mail de fin (victoire) quand on atteint le sommet
+# - Options vides = modal bloquante (game over ou victoire)
+# - Tone satirique constant sur la tech et le management
