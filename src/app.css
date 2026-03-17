@@ -503,6 +503,35 @@ dialog header h2 {
 .marketplace-filters {
     padding: 1rem;
     border-bottom: 1px solid var(--card-border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.filter-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.filter-inline input[type="text"],
+.filter-inline select {
+    margin: 0;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.85rem;
+    min-width: 160px;
+}
+
+.filter-inline input[type="checkbox"] {
+    margin: 0;
 }
 
 .marketplace-item {
@@ -606,6 +635,14 @@ dialog header h2 {
 
 .config-content h3 {
     margin-top: 0;
+}
+
+.hardware-detail-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    font-size: 0.9rem;
 }
 
 .config-form {

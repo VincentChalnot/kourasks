@@ -34,11 +34,17 @@ document.addEventListener('alpine:init', () => {
         showHardwareMarketplace: false,
         showServiceMarketplace: false,
         showServiceConfig: false,
+        showHardwareConfig: false,
+        selectedHardwareInstance: null,
         showMail: false,
         currentMail: null,
         selectedServiceConfig: null,
         serviceMarketplaceFilters: {
-            latestOnly: true
+            latestOnly: true,
+            typeFilter: '',
+            nameFilter: '',
+            freeOnly: false,
+            showDeprecated: false
         },
 
         // Game loop
@@ -588,6 +594,25 @@ document.addEventListener('alpine:init', () => {
             this.log('info', `Restarting hardware: ${hw.name}`);
         },
 
+        shutdownHardware(hwInstance) {
+            const hw = this.getHardware(hwInstance.hardwareId);
+            hwInstance.status = 'stopped';
+            // Stop all services on this hardware
+            this.serviceInstances.forEach(svc => {
+                if (svc.assignedHardwareId === hwInstance.id && svc.status === 'running') {
+                    svc.status = 'stopped';
+                    this.log('warning', `Service ${this.getService(svc.serviceId).name} stopped (hardware shutdown)`);
+                }
+            });
+            this.log('info', `Hardware ${hw.name} shut down`);
+            this.saveGame();
+        },
+
+        openHardwareConfig(hwInstance) {
+            this.selectedHardwareInstance = hwInstance;
+            this.showHardwareConfig = true;
+        },
+
         selectServiceForDeploy(service, version) {
             this.selectedServiceConfig = {
                 service: service,
@@ -864,14 +889,15 @@ document.addEventListener('alpine:init', () => {
             this.showHardwareMarketplace = true;
         },
 
-        openServiceMarketplace(filterType = null) {
+        openServiceMarketplace(filterType = '') {
             this.serviceMarketplaceFilters.typeFilter = filterType;
             this.showServiceMarketplace = true;
         },
 
         closeServiceMarketplace() {
             this.showServiceMarketplace = false;
-            this.serviceMarketplaceFilters.typeFilter = null;
+            this.serviceMarketplaceFilters.typeFilter = '';
+            this.serviceMarketplaceFilters.nameFilter = '';
         },
 
         openServiceMarketplaceForType(projInstance, reqType) {
@@ -892,11 +918,30 @@ document.addEventListener('alpine:init', () => {
         },
 
         get filteredServices() {
-            const services = this.servicesConfig.filter(svc => this.isUnlocked(svc));
+            let services = this.servicesConfig.filter(svc => {
+                // Only show services that have at least one unlocked version
+                const hasUnlockedVersion = (svc.versions || []).some(v => this.isUnlocked(v));
+                if (!hasUnlockedVersion) return false;
 
-            if (this.serviceMarketplaceFilters.typeFilter) {
-                return services.filter(svc => svc.type === this.serviceMarketplaceFilters.typeFilter);
-            }
+                // Type filter
+                if (this.serviceMarketplaceFilters.typeFilter) {
+                    if (svc.type !== this.serviceMarketplaceFilters.typeFilter) return false;
+                }
+
+                // Name filter
+                if (this.serviceMarketplaceFilters.nameFilter) {
+                    const search = this.serviceMarketplaceFilters.nameFilter.toLowerCase();
+                    if (!svc.name.toLowerCase().includes(search) && !svc.description.toLowerCase().includes(search)) return false;
+                }
+
+                // Free only filter
+                if (this.serviceMarketplaceFilters.freeOnly) {
+                    const hasFreeDeploy = (svc.versions || []).some(v => this.isUnlocked(v) && (v.deployCost === 0 || !v.deployCost));
+                    if (!hasFreeDeploy) return false;
+                }
+
+                return true;
+            });
 
             return services;
         },
@@ -904,7 +949,15 @@ document.addEventListener('alpine:init', () => {
         getFilteredVersions(service) {
             if (!service.versions) return [];
 
-            const unlocked = service.versions.filter(v => this.isUnlocked(v));
+            let unlocked = service.versions.filter(v => this.isUnlocked(v));
+
+            if (!this.serviceMarketplaceFilters.showDeprecated) {
+                // Hide deprecated versions; if all unlocked versions are deprecated, show them anyway
+                const nonDeprecated = unlocked.filter(v => !this.isVersionDeprecated(v));
+                if (nonDeprecated.length > 0) {
+                    unlocked = nonDeprecated;
+                }
+            }
 
             if (this.serviceMarketplaceFilters.latestOnly) {
                 // Return only the latest version
@@ -912,6 +965,16 @@ document.addEventListener('alpine:init', () => {
             }
 
             return unlocked;
+        },
+
+        get availableServiceTypes() {
+            const types = new Set();
+            this.servicesConfig.forEach(svc => {
+                if ((svc.versions || []).some(v => this.isUnlocked(v))) {
+                    types.add(svc.type);
+                }
+            });
+            return [...types].sort();
         },
 
         // === SAVE/LOAD ===

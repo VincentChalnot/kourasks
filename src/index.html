@@ -82,10 +82,7 @@
 
                                 <!-- Actions -->
                                 <div class="card-actions">
-                                    <template x-if="hwInstance.status === 'crashed'">
-                                        <button @click="restartHardware(hwInstance)">Redémarrer</button>
-                                    </template>
-                                    <button @click="sellHardware(hwInstance)" class="secondary">Vendre</button>
+                                    <button @click="openHardwareConfig(hwInstance)" class="secondary">Configurer</button>
                                 </div>
                             </div>
                         </div>
@@ -252,13 +249,39 @@
             </header>
 
             <div class="marketplace-filters">
-                <label>
-                    <input type="checkbox" x-model="serviceMarketplaceFilters.latestOnly">
-                    Uniquement les dernières versions
-                </label>
+                <div class="filter-row">
+                    <label class="filter-inline">
+                        <input type="text" x-model="serviceMarketplaceFilters.nameFilter" placeholder="Rechercher par nom...">
+                    </label>
+                    <label class="filter-inline">
+                        <select x-model="serviceMarketplaceFilters.typeFilter">
+                            <option value="">Tous les types</option>
+                            <template x-for="t in availableServiceTypes" :key="t">
+                                <option :value="t" x-text="t"></option>
+                            </template>
+                        </select>
+                    </label>
+                </div>
+                <div class="filter-row">
+                    <label class="filter-inline">
+                        <input type="checkbox" x-model="serviceMarketplaceFilters.latestOnly">
+                        Uniquement les dernières versions
+                    </label>
+                    <label class="filter-inline">
+                        <input type="checkbox" x-model="serviceMarketplaceFilters.freeOnly">
+                        Gratuit uniquement
+                    </label>
+                    <label class="filter-inline">
+                        <input type="checkbox" x-model="serviceMarketplaceFilters.showDeprecated">
+                        Afficher dépréciés
+                    </label>
+                </div>
             </div>
 
             <div class="marketplace-content">
+                <template x-if="filteredServices.length === 0">
+                    <div class="empty-message">Aucun service disponible avec ces filtres</div>
+                </template>
                 <template x-for="svc in filteredServices" :key="svc.id">
                     <div class="marketplace-item">
                         <div class="item-header">
@@ -269,6 +292,9 @@
 
                         <!-- Versions -->
                         <div class="service-versions">
+                            <template x-if="getFilteredVersions(svc).length === 0">
+                                <div class="empty-message">Aucune version disponible</div>
+                            </template>
                             <template x-for="version in getFilteredVersions(svc)" :key="version.id">
                                 <div class="version-item" :class="{'deprecated': isVersionDeprecated(version)}">
                                     <div class="version-header">
@@ -281,9 +307,15 @@
                                         <template x-if="version.baseYield">
                                             <div><strong>Yield:</strong> <span x-text="formatNumber(version.baseYield) + ' K/s'"></span></div>
                                         </template>
-                                        <div><strong>Coût:</strong> <span x-text="formatNumber(version.deployCost) + ' K'"></span></div>
-                                        <div><strong>Récurrent:</strong> <span x-text="formatNumber(version.recurringCost) + ' K/s'"></span></div>
+                                        <div><strong>Coût déploiement:</strong> <span x-text="formatNumber(version.deployCost) + ' K'"></span></div>
+                                        <div><strong>Coût récurrent:</strong> <span x-text="formatNumber(version.recurringCost) + ' K/s'"></span></div>
                                         <div><strong>Crash rate:</strong> <span x-text="(version.crashRate * 100).toFixed(2) + '%/s'"></span></div>
+                                        <template x-if="version.requireHardware">
+                                            <div><strong>Requires hardware</strong></div>
+                                        </template>
+                                        <template x-if="svc.global">
+                                            <div><strong>Global (tous projets)</strong></div>
+                                        </template>
                                     </div>
                                     <button @click="selectServiceForDeploy(svc, version)" :disabled="kouraks < version.deployCost">
                                         Déployer (<span x-text="formatNumber(version.deployCost)"></span> K)
@@ -341,6 +373,56 @@
                     <footer>
                         <button @click="showServiceConfig = false" class="secondary">Annuler</button>
                         <button @click="confirmServiceDeploy()">Déployer</button>
+                    </footer>
+                </div>
+            </template>
+        </article>
+    </dialog>
+
+    <!-- Hardware Configuration Modal -->
+    <dialog :open="showHardwareConfig" @click.self="showHardwareConfig = false">
+        <article x-show="selectedHardwareInstance">
+            <header>
+                <h2 x-text="selectedHardwareInstance ? getHardware(selectedHardwareInstance.hardwareId).name : ''"></h2>
+                <button @click="showHardwareConfig = false" aria-label="Close" class="close"></button>
+            </header>
+
+            <template x-if="selectedHardwareInstance">
+                <div class="config-content">
+                    <p x-text="getHardware(selectedHardwareInstance.hardwareId).description"></p>
+
+                    <div class="hardware-detail-stats">
+                        <div><strong>Statut:</strong> <span class="status-badge" :class="selectedHardwareInstance.status" x-text="selectedHardwareInstance.status"></span></div>
+                        <div><strong>Capacité max:</strong> <span x-text="formatNumber(getHardware(selectedHardwareInstance.hardwareId).maximumYield) + ' K/s'"></span></div>
+                        <div><strong>Charge actuelle:</strong> <span x-text="formatNumber(getHardwareLoad(selectedHardwareInstance)) + ' K/s'"></span></div>
+                        <div><strong>Coût récurrent:</strong> <span x-text="formatNumber(getHardware(selectedHardwareInstance.hardwareId).recurringCost) + ' K/s'"></span></div>
+                        <div><strong>Multiplicateur yield:</strong> <span x-text="'×' + getHardware(selectedHardwareInstance.hardwareId).yieldMultiplier"></span></div>
+                    </div>
+
+                    <!-- Services on this hardware -->
+                    <div class="hardware-services">
+                        <h4>Services hébergés:</h4>
+                        <template x-if="getServicesOnHardware(selectedHardwareInstance.id).length === 0">
+                            <div class="empty-message">Aucun service hébergé</div>
+                        </template>
+                        <template x-for="svcInstance in getServicesOnHardware(selectedHardwareInstance.id)" :key="svcInstance.id">
+                            <div class="service-mini">
+                                <span x-text="getService(svcInstance.serviceId).name"></span>
+                                <span x-text="'v' + getServiceVersion(svcInstance.serviceVersionId).name"></span>
+                                <span class="status-badge" :class="svcInstance.status" x-text="svcInstance.status"></span>
+                            </div>
+                        </template>
+                    </div>
+
+                    <footer>
+                        <button @click="showHardwareConfig = false" class="secondary">Fermer</button>
+                        <template x-if="selectedHardwareInstance.status === 'running'">
+                            <button @click="shutdownHardware(selectedHardwareInstance); showHardwareConfig = false" class="secondary">Arrêter</button>
+                        </template>
+                        <template x-if="selectedHardwareInstance.status === 'crashed'">
+                            <button @click="restartHardware(selectedHardwareInstance)">Redémarrer</button>
+                        </template>
+                        <button @click="sellHardware(selectedHardwareInstance); showHardwareConfig = false" class="contrast">Vendre (<span x-text="formatNumber(getHardware(selectedHardwareInstance.hardwareId).sellValue || (getHardware(selectedHardwareInstance.hardwareId).deployCost * 0.15))"></span> K)</button>
                     </footer>
                 </div>
             </template>
