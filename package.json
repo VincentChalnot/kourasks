@@ -1,0 +1,14 @@
+{
+  "name": "kouraks",
+  "version": "1.0.0",
+  "description": "No-build idle game — Alpine.js + Pico CSS",
+  "private": true,
+  "scripts": {
+    "lint": "biome check app.js app.css",
+    "lint:fix": "biome check --write app.js app.css",
+    "lint:unsafe": "biome check --write --unsafe app.js app.css"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.7"
+  }
+}

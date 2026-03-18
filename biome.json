@@ -1,0 +1,19 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    }
+  },
+  "javascript": {
+    "globals": [
+      "Alpine",
+      "$store",
+      "$el",
+      "$dispatch",
+      "$watch",
+      "$refs"
+    ]
+  }
+}
