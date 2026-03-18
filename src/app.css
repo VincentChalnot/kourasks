@@ -162,8 +162,12 @@ section h2 {
 }
 
 @keyframes pulse-red {
-    0%, 100% { border-color: var(--error-color); }
-    50% { border-color: transparent; }
+    0%, 100% {
+        border-color: var(--error-color);
+    }
+    50% {
+        border-color: transparent;
+    }
 }
 
 .project-card.has-issues {

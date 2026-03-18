@@ -55,23 +55,13 @@ document.addEventListener('alpine:init', () => {
         TICK_INTERVAL: 100, // ms
         TRIMESTER_DURATION: 360, // 6 minutes in seconds
 
-        // === INITIALIZATION ===
+// === INITIALIZATION ===
         async init() {
             this.log('info', 'KOURASKS System initializing...');
-
-            // Load YAML data
             await this.loadGameData();
-
-            // Load or create new game
             this.loadGame();
-
-            // Initialize projects
             this.initializeProjects();
-
-            // Start game loop
             this.startGameLoop();
-
-            // Expose to window for console access
             window.gameRoot.config = {
                 hardware: this.hardwareConfig,
                 services: this.servicesConfig,
@@ -79,8 +69,14 @@ document.addEventListener('alpine:init', () => {
                 mails: this.mailsConfig
             };
             window.gameRoot.runtime = this;
-
             this.log('info', 'System ready. Bon courage.');
+        },
+
+        resetGame() {
+            if (confirm('Reset game?')) {
+                localStorage.removeItem('kourasks_save');
+                location.reload();
+            }
         },
 
         async loadGameData() {
@@ -161,6 +157,8 @@ document.addEventListener('alpine:init', () => {
 
             // Add production
             this.kouraks += this.currentNetYield * deltaTime;
+            // Emergency shutdown if Kouraks went negative
+            this.emergencyShutdownForNegativeKouraks();
 
             // Update production tracking
             this.updateProductionTracking(deltaTime);
@@ -423,8 +421,8 @@ document.addEventListener('alpine:init', () => {
                 const hasService = this.serviceInstances.some(svc => {
                     const service = this.getService(svc.serviceId);
                     return svc.status === 'running' &&
-                           service.type === reqType &&
-                           (svc.assignedProjectId === projInstance.projectId || service.global);
+                        service.type === reqType &&
+                        (svc.assignedProjectId === projInstance.projectId || service.global);
                 });
                 if (!hasService) return false;
             }
@@ -433,8 +431,8 @@ document.addEventListener('alpine:init', () => {
             for (const reqId of strictRequirements) {
                 const hasService = this.serviceInstances.some(svc => {
                     return svc.status === 'running' &&
-                           svc.serviceVersionId === reqId &&
-                           (svc.assignedProjectId === projInstance.projectId || this.getService(svc.serviceId).global);
+                        svc.serviceVersionId === reqId &&
+                        (svc.assignedProjectId === projInstance.projectId || this.getService(svc.serviceId).global);
                 });
                 if (!hasService) return false;
             }
@@ -443,6 +441,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         checkTrimesterKPIs() {
+            if (this.currentTrimester < 1) return;
             this.projectInstances.forEach(projInstance => {
                 const version = this.getCurrentProjectVersion(projInstance);
                 if (version) {
@@ -551,11 +550,12 @@ document.addEventListener('alpine:init', () => {
             }
 
             this.kouraks -= hardware.deployCost;
+            this.emergencyShutdownForNegativeKouraks();
 
             const instance = {
                 id: this.generateId(),
                 hardwareId: hardware.id,
-                status: hardware.deployTime > 0 ? 'deploying' : 'running',
+                status: 'stopped',
                 remainingDeployTime: hardware.deployTime,
                 remainingRestartTime: 0,
                 currentProduction: 0,
@@ -592,6 +592,11 @@ document.addEventListener('alpine:init', () => {
             hwInstance.status = 'restarting';
             hwInstance.remainingRestartTime = hw.restartDuration;
             this.log('info', `Restarting hardware: ${hw.name}`);
+        },
+
+        startHardware(hwInstance) {
+            hwInstance.status = 'running';
+            this.log('info', `Started hardware: ${this.getHardware(hwInstance.hardwareId).name}`);
         },
 
         shutdownHardware(hwInstance) {
@@ -645,6 +650,7 @@ document.addEventListener('alpine:init', () => {
             }
 
             this.kouraks -= config.version.deployCost;
+            this.emergencyShutdownForNegativeKouraks();
 
             const instance = {
                 id: this.generateId(),
@@ -820,7 +826,7 @@ document.addEventListener('alpine:init', () => {
             const hasService = this.serviceInstances.find(svc => {
                 const service = this.getService(svc.serviceId);
                 return service.type === reqType &&
-                       (svc.assignedProjectId === projInstance.projectId || service.global);
+                    (svc.assignedProjectId === projInstance.projectId || service.global);
             });
 
             if (!hasService) return 'missing';
@@ -861,6 +867,36 @@ document.addEventListener('alpine:init', () => {
             // Keep only last 200 logs
             if (this.logs.length > 200) {
                 this.logs = this.logs.slice(-200);
+            }
+        },
+
+        // Emergency shutdown if Kouraks is negative
+        emergencyShutdownForNegativeKouraks() {
+            if (this.kouraks < 0) {
+                // Stop hardware with nonzero recurringCost
+                this.hardwareInstances.forEach(hwInstance => {
+                    if (hwInstance.status === 'running') {
+                        const hwConfig = this.getHardware(hwInstance.hardwareId);
+                        if (hwConfig.recurringCost && hwConfig.recurringCost > 0) {
+                            hwInstance.status = 'stopped';
+                            this.log('warning', `Hardware ${hwConfig.name} stopped: plus assez de Kouraks pour payer le coût récurrent.`);
+                        }
+                    }
+                });
+                // Stop services with nonzero recurringCost
+                this.serviceInstances.forEach(svcInstance => {
+                    if (svcInstance.status === 'running') {
+                        const ver = this.getServiceVersion(svcInstance.serviceVersionId);
+                        if (ver.recurringCost && ver.recurringCost > 0) {
+                            svcInstance.status = 'stopped';
+                            const service = this.getService(svcInstance.serviceId);
+                            this.log('warning', `Service ${service.name} arrêté: plus assez de Kouraks pour payer le coût récurrent.`);
+                        }
+                    }
+                });
+                // Set Kouraks to zero
+                this.kouraks = 0;
+                this.log('error', "Fonds épuisés : arrêt de toutes les machines/services ayant un coût récurrent. Kouraks remis à zéro.");
             }
         },
 
@@ -906,7 +942,7 @@ document.addEventListener('alpine:init', () => {
 
         // === COMPUTED PROPERTIES ===
         get activeProjectInstances() {
-            return this.projectInstances.filter(p => p.strikes < 3);
+            return this.projectInstances.filter(p => p.strikes < 3 && p.currentVersionId !== null);
         },
 
         get availableHardware() {
@@ -915,6 +951,11 @@ document.addEventListener('alpine:init', () => {
 
         get runningHardwareInstances() {
             return this.hardwareInstances.filter(hw => hw.status === 'running');
+        },
+
+        get ownedHardwareInstances() {
+            // Returns all hardware instances owned by the player, regardless of status
+            return this.hardwareInstances;
         },
 
         get filteredServices() {

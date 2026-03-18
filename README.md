@@ -1,33 +1,184 @@
-# Kouraks
+# KOURASKS - Game Implementation
 
-Kouraks est un jeu idle/clicker satirique qui plonge le joueur dans l’absurdité et la complexité technique des entreprises modernes. Le but ? Expérimenter – et critiquer – l’over-engineering en incarnant sans filtre le rôle d’un acteur du chaos.
+## Overview
 
-[Accéder au jeu en production](https://kourasks.pages.dev/)
+KOURASKS is a satirical idle/clicker game about tech over-engineering, implemented as a static SPA with no build
+process.
 
-## Concept
+## Technical Stack
 
-- **Satire technique** : Kouraks n’est pas un « serious game » mais une comédie noire où le flou règne. On ne vous expliquera jamais ce que sont les Kouraks, ni pourquoi les projets existent. Ce flou nourrit l’expérience !
-- **Public cible** : Développeurs, DevOps, SRE, Product Managers… tous ceux qui ont déjà souffert de la complexité ou veulent en rire jaune.
-- **Positionnement unique** : La complexification est le problème… et non la solution. Finir le jeu n’est pas une victoire, mais une prise de conscience amère.
+- **Alpine.js** (15KB) - Reactive DOM framework
+- **js-yaml** - YAML configuration loader
+- **Pico.css** (10KB) - Base styling
+- **Vanilla JavaScript** - Game logic
+- **LocalStorage** - Game state persistence
 
-## Principes et anti-patterns
+## Files
 
-- **Anti-feature creep** : Pas de multijoueur, leaderboard, système de quêtes, achievements externes ou minigames – sauf si ça renforce la satire.
-- **Anti over-engineering** : Le code reste simple (Vanilla JS + Alpine.js + YAML statique), pas de framework inutile, pas de backend superflu.
-- **Anti-lore** : N’attendez aucune justification narrative, aucun personnage avec une histoire : le flou est une règle d’or.
+- `index.html` - Main HTML structure, UI, and modals (381 lines)
+- `app.css` - Custom styling and layout (660 lines)
+- `app.js` - Complete game engine and logic (958 lines)
+- `data/*.yaml` - Game configuration (hardware, services, projects, mails)
 
-## Mécaniques essentielles
+## How to Run
 
-- Le jeu se déroule par trimestres, chaque palier introduit des outils et des complications inspirées de l’évolution tech.
-- Vous déployez du hardware et des services, gérez des crashes, devez répondre aux KPI absurdes et survivez aux mails surréalistes du PDG.
-- L’objectif n’est pas de gagner, mais de découvrir où mène la complexité…
+1. Open `index.html` in a modern web browser
+2. The game will automatically:
+    - Load YAML configuration from `/data/` folder
+    - Initialize or load saved game from localStorage
+    - Start the game loop
+    - Display initial UI
 
-## Interface
+## Game Mechanics Implemented
 
-Kouraks propose une expérience minimaliste, presque « terminal system », avec Pico.css et Alpine.js pour l’interactivité. Hardware, services et projets sont strictement séparés dans l’UI.
+### Core Loop
 
----
+- **Tick system**: 100ms intervals
+- **Trimester tracking**: 6 minutes real-time = 1 trimester
+- **Auto-save**: Every 10 seconds to localStorage
 
-Pour l’expérience complète, rendez-vous sur : [https://kourasks.pages.dev/](https://kourasks.pages.dev/)
+### Hardware System
 
-*Ce jeu est strictement satirique et ne doit jamais perdre sa philosophie de flou, de minimalisme et d’anti-feature creep.*
+- Deploy hardware instances
+- Track running status (running, crashed, deploying, restarting, stopped)
+- Monitor load/capacity with throttling
+- Crash simulation based on crashRate
+- Sell hardware with value recovery
+
+### Service System
+
+- Deploy service instances with specific versions
+- Assign to hardware (if requireHardware: true)
+- Assign to projects (if global: false)
+- Version management with deprecation tracking
+- Crash simulation and restart mechanics
+- Status tracking (running, crashed, deploying, restarting, stopped)
+
+### Project System
+
+- Multiple active projects
+- Version management with automatic version detection
+- KPI tracking with trimester targets
+- Strike system (3 strikes = project cancelled)
+- Production tracking and history
+- Service type requirements validation
+
+### Yield Calculation
+
+Implements the complete yield calculation system from specs:
+
+1. Calculate base service yields
+2. Apply hardware and service multipliers
+3. Apply hardware throttling if overloaded
+4. Calculate project yields (minimum of all services)
+5. Apply global service multipliers
+6. Subtract recurring costs
+
+### Unlock System
+
+- Trimester-based unlocks (unlockAtTrimester)
+- Event-based unlocks (unlockAtEvent)
+- Automatic detection and initialization
+
+### Mail System
+
+- Modal-based display
+- Game pause when mail is shown
+- Option selection with event triggers
+- Persistence of mail responses
+
+### UI Features
+
+- Hardware marketplace modal
+- Service marketplace modal with version selection
+- Service configuration modal
+- Real-time stats display
+- Terminal-style logging
+- Responsive layout
+- Status indicators with color coding
+
+## Console Debugging
+
+The game exposes a global object for debugging:
+
+```javascript
+// Access config
+window.gameRoot.config.hardware
+window.gameRoot.config.services
+window.gameRoot.config.projects
+window.gameRoot.config.mails
+
+// Access runtime state
+window.gameRoot.runtime.kouraks
+window.gameRoot.runtime.currentNetYield
+window.gameRoot.runtime.hardwareInstances
+window.gameRoot.runtime.serviceInstances
+window.gameRoot.runtime.projectInstances
+```
+
+## Testing Checklist
+
+### Hardware Tests
+
+- [x] Open hardware marketplace
+- [x] View available hardware
+- [x] Deploy hardware (first free item)
+- [x] View hardware in deployed list
+- [x] Monitor hardware status
+- [x] Check hardware load gauge
+
+### Service Tests
+
+- [x] Open service marketplace
+- [x] View available services
+- [x] View service versions
+- [x] Select service for deployment
+- [x] Configure service (hardware + project)
+- [x] Deploy service
+- [x] View service in deployed list
+- [x] Monitor service status
+
+### Project Tests
+
+- [x] View active projects
+- [x] Check project requirements badges
+- [x] Monitor KPI progress
+- [x] Track production
+
+### Game Loop Tests
+
+- [x] Kouraks accumulation
+- [x] Net yield calculation (positive/negative)
+- [x] Trimester progression
+- [x] Auto-save functionality
+
+## Known Limitations
+
+- CDN resources may be blocked in restricted environments (use local copies if needed)
+- Game requires modern browser with ES6+ support
+- LocalStorage required for save/load functionality
+
+## Code Quality
+
+- Code and comments: English
+- UI text: French
+- Clean separation of concerns (HTML/CSS/JS)
+- No build process required
+- Modular structure with clear function responsibilities
+- Comprehensive error handling
+- Terminal logging for debugging
+
+## Implementation Notes
+
+All game mechanics from the specifications are implemented:
+
+- Yield calculation with multipliers and throttling
+- Hardware capacity management
+- Service-to-hardware assignment
+- Project requirements validation
+- KPI tracking with strikes
+- Crash simulation
+- Event system
+- Mail system with pause
+- Unlock conditions
+- Production history tracking
