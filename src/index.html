@@ -28,7 +28,7 @@
     </div>
 
     <div class="info-section">
-        <div class="ceo-lives">PDG: <span x-text="(3 - projectFailures) + '/3'">3/3</span></div>
+        <div class="ceo-lives">PDG: <span x-text="(GAME_OVER_FAILURE_LIMIT - projectFailures) + '/' + GAME_OVER_FAILURE_LIMIT">3/3</span></div>
         <div class="trimester">Trimestre <span x-text="formatTrimester(currentTrimester)">0</span></div>
     </div>
 </header>
@@ -131,7 +131,7 @@
                                          :style="'width: ' + Math.min(100, (getProjectKpiProgress(projInstance) / getCurrentProjectVersion(projInstance).targetProduction) * 100) + '%'"></div>
                                 </div>
                                 <div class="strikes" x-show="projInstance.strikes > 0">
-                                    Strikes: <span x-text="projInstance.strikes + '/3'"></span>
+                                    Strikes: <span x-text="projInstance.strikes + '/' + STRIKE_LIMIT"></span>
                                 </div>
                             </div>
                         </template>
@@ -141,7 +141,7 @@
                             <template x-for="reqType in getProjectRequirements(projInstance)" :key="reqType">
                                 <div class="requirement-badge"
                                      :class="getRequirementStatus(projInstance, reqType)"
-                                     @click="openServiceMarketplaceForType(projInstance, reqType)">
+                                     @click="openServiceMarketplace(reqType)">
                                     <span x-text="reqType"></span>
                                 </div>
                             </template>
@@ -459,7 +459,7 @@
                     </template>
                     <button @click="sellHardware(selectedHardwareInstance); showHardwareConfig = false"
                             class="contrast">Vendre (<span
-                            x-text="formatNumber(getHardware(selectedHardwareInstance.hardwareId).sellValue || (getHardware(selectedHardwareInstance.hardwareId).deployCost * 0.15))"></span>
+                            x-text="formatNumber(getHardware(selectedHardwareInstance.hardwareId).sellValue || (getHardware(selectedHardwareInstance.hardwareId).deployCost * HARDWARE_SELL_RATIO))"></span>
                         K)
                     </button>
                 </footer>
