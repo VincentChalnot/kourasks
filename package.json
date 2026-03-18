@@ -4,9 +4,9 @@
   "description": "No-build idle game — Alpine.js + Pico CSS",
   "private": true,
   "scripts": {
-    "lint": "biome check app.js app.css",
-    "lint:fix": "biome check --write app.js app.css",
-    "lint:unsafe": "biome check --write --unsafe app.js app.css"
+    "lint": "biome check src/app.js src/app.css",
+    "lint:fix": "biome check --write src/app.js src/app.css",
+    "lint:unsafe": "biome check --write --unsafe src/app.js src/app.css"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.7"

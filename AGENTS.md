@@ -14,9 +14,9 @@ When in doubt, keep it simple. This stack is intentionally minimal.
 - Pico CSS — semantic HTML styling, no utility classes
 
 **Project files:**
-- `index.html` — single entry point, all CDN imports live here
-- `app.js` — all JavaScript, Alpine stores and components
-- `app.css` — custom styles on top of Pico CSS
+- `src/index.html` — single entry point, all CDN imports live here
+- `src/app.js` — all JavaScript, Alpine stores and components
+- `src/app.css` — custom styles on top of Pico CSS
 - `package.json` — dev tooling only (Biome linter), never runtime
 - `biome.json` — linter config
 
@@ -25,7 +25,7 @@ When in doubt, keep it simple. This stack is intentionally minimal.
 ## Absolute Rules
 
 **Never do this:**
-- `import` / `export` statements in `app.js` — there is no bundler
+- `import` / `export` statements in `src/app.js` — there is no bundler
 - `npm install <anything>` for a runtime dependency — use CDN instead
 - Create `.ts`, `.jsx`, `.tsx`, `.vue` files
 - Suggest Vite, Webpack, Rollup, esbuild or any build tool
@@ -34,8 +34,8 @@ When in doubt, keep it simple. This stack is intentionally minimal.
 - Use `document.getElementById` or manual DOM queries — use Alpine.js instead
 
 **Always do this:**
-- Add new CDN dependencies as `<script>` or `<link>` tags in `index.html`
-- Keep all reactive state in `app.js` via `Alpine.store()` or `Alpine.data()`
+- Add new CDN dependencies as `<script>` or `<link>` tags in `src/index.html`
+- Keep all reactive state in `src/app.js` via `Alpine.store()` or `Alpine.data()`
 - Use semantic HTML elements with Pico CSS (no custom class soup)
 - Run `npm run lint` after every change and fix all errors before finishing
 
