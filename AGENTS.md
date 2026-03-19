@@ -15,7 +15,8 @@ When in doubt, keep it simple. This stack is intentionally minimal.
 
 **Project files:**
 - `src/index.html` — single entry point, all CDN imports live here
-- `src/app.js` — all JavaScript, Alpine stores and components
+- `src/engine.js` — game loop, tick management, yield calculations, core logic
+- `src/game.js` — Alpine.js stores and components, UI interactions
 - `src/app.css` — custom styles on top of Pico CSS
 - `package.json` — dev tooling only (Biome linter), never runtime
 - `biome.json` — linter config
@@ -25,7 +26,7 @@ When in doubt, keep it simple. This stack is intentionally minimal.
 ## Absolute Rules
 
 **Never do this:**
-- `import` / `export` statements in `src/app.js` — there is no bundler
+- `import` / `export` statements in `src/game.js` or `src/engine.js` — there is no bundler
 - `npm install <anything>` for a runtime dependency — use CDN instead
 - Create `.ts`, `.jsx`, `.tsx`, `.vue` files
 - Suggest Vite, Webpack, Rollup, esbuild or any build tool
@@ -35,7 +36,7 @@ When in doubt, keep it simple. This stack is intentionally minimal.
 
 **Always do this:**
 - Add new CDN dependencies as `<script>` or `<link>` tags in `src/index.html`
-- Keep all reactive state in `src/app.js` via `Alpine.store()` or `Alpine.data()`
+- Keep all reactive state in `src/game.js` via `Alpine.store()` or `Alpine.data()`
 - Use semantic HTML elements with Pico CSS (no custom class soup)
 - Run `npm run lint` after every change and fix all errors before finishing
 
@@ -45,7 +46,7 @@ When in doubt, keep it simple. This stack is intentionally minimal.
 
 **Available globals:** `Alpine`, `$store`, `$el`, `$dispatch`, `$watch`, `$refs`, `$event`, `$nextTick`
 
-**Defining a store (in app.js):**
+**Defining a store (in game.js):**
 ```js
 document.addEventListener('alpine:init', () => {
   Alpine.store('game', {
@@ -55,7 +56,7 @@ document.addEventListener('alpine:init', () => {
 })
 ```
 
-**Defining a reusable component (in app.js):**
+**Defining a reusable component (in game.js):**
 ```js
 document.addEventListener('alpine:init', () => {
   Alpine.data('myComponent', () => ({
@@ -89,4 +90,4 @@ document.addEventListener('alpine:init', () => {
 3. Fix all reported errors
 4. Only then consider the task done
 
-If a lint error requires a structural change to `app.js`, make it — do not suppress rules.
+If a lint error requires a structural change to `game.js`, make it — do not suppress rules.

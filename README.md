@@ -15,9 +15,12 @@ process.
 
 ## Files
 
-- `index.html` - Main HTML structure, UI, and modals (381 lines)
-- `app.css` - Custom styling and layout (660 lines)
-- `app.js` - Complete game engine and logic (958 lines)
+- `src/index.html` — single entry point, all CDN imports live here
+- `src/engine.js` — game loop, tick management, yield calculations, core logic
+- `src/game.js` — Alpine.js stores and components, UI interactions
+- `src/app.css` — custom styles on top of Pico CSS
+- `package.json` — dev tooling only (Biome linter), never runtime
+- `biome.json` — linter config
 - `data/*.yaml` - Game configuration (hardware, services, projects, mails)
 
 ## How to Run
