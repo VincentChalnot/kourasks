@@ -32,6 +32,14 @@ document.addEventListener("alpine:init", () => {
 		// Derived display values (updated each tick)
 		currentNetYield: 0,
 
+		// Cached arrays to prevent re-rendering selectors on every tick
+		_hardwareInstancesCache: null,
+		_hardwareInstancesCacheJson: null,
+		_projectInstancesCache: null,
+		_projectInstancesCacheJson: null,
+		_serviceInstancesCache: null,
+		_serviceInstancesCacheJson: null,
+
 		// UI State
 		logs: [],
 		showHardwareMarketplace: false,
@@ -154,13 +162,42 @@ document.addEventListener("alpine:init", () => {
 			return this.state?.projectFailures ?? 0;
 		},
 		get hardwareInstances() {
-			return this.state?.hardwareInstances ?? [];
+			// Return cached array to prevent Alpine.js from re-rendering selectors on every tick
+			// Only update cache when content actually changes
+			const arr = this.state?.hardwareInstances ?? [];
+			const cache = this._hardwareInstancesCache;
+			const cacheJson = this._hardwareInstancesCacheJson;
+			const arrJson = JSON.stringify(arr.map((h) => h.id));
+			if (!cache || arrJson !== cacheJson) {
+				this._hardwareInstancesCache = arr;
+				this._hardwareInstancesCacheJson = arrJson;
+				return arr;
+			}
+			return cache;
 		},
 		get serviceInstances() {
-			return this.state?.serviceInstances ?? [];
+			const arr = this.state?.serviceInstances ?? [];
+			const cache = this._serviceInstancesCache;
+			const cacheJson = this._serviceInstancesCacheJson;
+			const arrJson = JSON.stringify(arr.map((s) => s.id));
+			if (!cache || arrJson !== cacheJson) {
+				this._serviceInstancesCache = arr;
+				this._serviceInstancesCacheJson = arrJson;
+				return arr;
+			}
+			return cache;
 		},
 		get projectInstances() {
-			return this.state?.projectInstances ?? [];
+			const arr = this.state?.projectInstances ?? [];
+			const cache = this._projectInstancesCache;
+			const cacheJson = this._projectInstancesCacheJson;
+			const arrJson = JSON.stringify(arr.map((p) => p.projectId));
+			if (!cache || arrJson !== cacheJson) {
+				this._projectInstancesCache = arr;
+				this._projectInstancesCacheJson = arrJson;
+				return arr;
+			}
+			return cache;
 		},
 		get mailInstances() {
 			return this.state?.mailInstances ?? [];
