@@ -700,6 +700,11 @@ dialog header h2 {
 	margin: 0;
 }
 
+.mail-signature {
+	text-align: right;
+	font-style: italic;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1024px) {
 	.game-container {

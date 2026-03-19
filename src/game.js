@@ -27,7 +27,7 @@ document.addEventListener("alpine:init", () => {
 		},
 
 		// === ENGINE STATE ===
-		state: Engine.createInitialState(),
+		state: Engine.createInitialState(10),
 
 		// Derived display values (updated each tick)
 		currentNetYield: 0,
