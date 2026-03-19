@@ -9,6 +9,8 @@
   "javascript": {
     "globals": [
       "Alpine",
+      "Engine",
+      "jsyaml",
       "$store",
       "$el",
       "$dispatch",
