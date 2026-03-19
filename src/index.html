@@ -17,7 +17,7 @@
 <header class="navbar">
     <div class="score-section">
         <div class="score-label">Kouraks</div>
-        <div class="score-value" x-text="formatNumber(kouraks)">0</div>
+        <div class="score-value" x-text="Math.round(kouraks)">0</div>
         <div class="yield-value" :class="{'positive': currentNetYield >= 0, 'negative': currentNetYield < 0}">
             <span x-text="(currentNetYield >= 0 ? '+' : '') + formatNumber(currentNetYield)">0</span> K/s
         </div>
@@ -28,7 +28,8 @@
     </div>
 
     <div class="info-section">
-        <div class="ceo-lives">PDG: <span x-text="(GAME_OVER_FAILURE_LIMIT - projectFailures) + '/' + GAME_OVER_FAILURE_LIMIT">3/3</span></div>
+        <div class="ceo-lives">PDG: <span
+                x-text="(GAME_OVER_FAILURE_LIMIT - projectFailures) + '/' + GAME_OVER_FAILURE_LIMIT">3/3</span></div>
         <div class="trimester">Trimestre <span x-text="formatTrimester(currentTrimester)">0</span></div>
     </div>
 </header>
@@ -162,11 +163,13 @@
                 </template>
 
                 <template x-for="svcInstance in serviceInstances" :key="svcInstance.id">
-                    <div class="service-card" :class="{'crashed': svcInstance.status === 'crashed', 'hardware-blocked': isServiceBlockedByHardware(svcInstance) || isServiceAwaitingHardware(svcInstance)}">
+                    <div class="service-card"
+                         :class="{'crashed': svcInstance.status === 'crashed', 'hardware-blocked': isServiceBlockedByHardware(svcInstance) || isServiceAwaitingHardware(svcInstance)}">
                         <div class="card-header">
                             <h3 x-text="getService(svcInstance.serviceId).name"></h3>
                             <div class="status-badges">
-                                <span class="status-badge" :class="svcInstance.status" x-text="svcInstance.status"></span>
+                                <span class="status-badge" :class="svcInstance.status"
+                                      x-text="svcInstance.status"></span>
                                 <template x-if="isServiceBlockedByHardware(svcInstance)">
                                     <span class="status-badge hardware-error-badge">HARDWARE ERROR</span>
                                 </template>
@@ -185,8 +188,9 @@
                                         x-text="formatNumber(getServiceVersion(svcInstance.serviceVersionId).baseYield || 0) + ' K/s'"></span>
                                 </div>
                                 <template x-if="svcInstance.assignedHardwareId">
-                                    <div><strong>Hardware:</strong> <span
-                                            x-text="getHardware(svcInstance.assignedHardwareId).name"></span></div>
+                                    <div><strong>Hardware:</strong>
+                                        <span x-text="getHardware(svcInstance.assignedHardwareId).name || 'Non trouvé'"></span>
+                                    </div>
                                 </template>
                                 <template x-if="svcInstance.assignedProjectId">
                                     <div><strong>Projet:</strong> <span
@@ -404,7 +408,8 @@
 
                 <footer>
                     <button @click="showServiceConfig = false" class="secondary">Annuler</button>
-                    <button @click="confirmServiceDeploy()" x-text="selectedServiceConfig.existingInstance ? 'Reconfigurer' : 'Déployer'"></button>
+                    <button @click="confirmServiceDeploy()"
+                            x-text="selectedServiceConfig.existingInstance ? 'Reconfigurer' : 'Déployer'"></button>
                 </footer>
             </div>
         </template>
@@ -486,11 +491,12 @@
             <div class="mail-content">
                 <p><i x-text="currentMail?.from || ''"></i></p>
                 <h3 x-text="currentMail.name"></h3>
-                <p x-text="currentMail.description"></p>
+                <p x-html="currentMail.description"></p>
 
                 <div class="mail-options">
                     <template x-for="option in currentMail.options" :key="option.id">
-                        <button @click="respondToMail(option)" x-text="option.name" x-bind:title="option.description"></button>
+                        <button @click="respondToMail(option)" x-text="option.name"
+                                x-bind:title="option.description"></button>
                     </template>
                 </div>
             </div>
