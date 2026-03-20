@@ -1,4 +1,4 @@
-# KOURASKS - Configuration Mails
+# KOURAKS - Configuration Mails
 # Emails narratifs liés aux événements du jeu
 # Les mails bloquent le jeu et nécessitent une réponse
 
@@ -409,6 +409,29 @@ mails:
         name: "Recommencer une nouvelle partie"
         eventId: game_reset
         description: "Nouvelle partie, nouveaux bugs, même JM."
+
+  # ==========================================
+  # Pause Café
+  # ==========================================
+
+  - id: mail-pause-cafe
+    name: "☕ C'est l'heure de la pause café !"
+    description: |
+      <p>Eh oui, même un développeur a besoin de faire une pause !</p>
+      <p>Le café est prêt. La machine à espresso du bureau fait enfin funcionar. Bernard est en train de discuter de ses scores de golf au niveau de la machine.</p>
+      <p>C'est l'occasion de prendre un peu de recul. Respirez. Regardez votre écran. Vous êtes sûr de vouloir continuer ?</p>
+      <p>Sinon, on peut aussi discuter de la dernière fois où le serveur a crashé en pleine nuit...</p>
+      <p class="mail-signature">— Le Syndicaliste Dev</p>
+    from: "Le Syndicaliste Dev <syndic@KouraTech.com>"
+    unlockAtEvent: pause_game
+    options:
+      - id: pause-resume
+        name: "Reprendre le travail"
+        description: "Retour au travail, le café attendra."
+      - id: pause-restart
+        name: "Recommencer la partie"
+        eventId: game_reset
+        description: "Tout recommencer depuis le début."
 
 # Notes de conception:
 # - Mails liés aux événements via unlockAtEvent (eventId des projets)

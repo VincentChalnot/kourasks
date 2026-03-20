@@ -78,6 +78,23 @@ document.addEventListener("alpine:init", () => {
 			}
 		},
 
+		triggerPause() {
+			if (this.showMail) return;
+
+			this.state = {
+				...this.state,
+				firedEventIds: [...this.state.firedEventIds, "pause_game"],
+				mailInstances: [
+					...this.state.mailInstances,
+					{ mailId: "mail-pause-cafe", optionId: null },
+				],
+				paused: true,
+			};
+
+			this.checkMailsForDisplay();
+			this.saveGame();
+		},
+
 		async loadGameData() {
 			try {
 				const hwResponse = await fetch("data/hardware.yaml");

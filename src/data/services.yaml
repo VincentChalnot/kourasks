@@ -1,4 +1,4 @@
-# KOURASKS - Configuration Services
+# KOURAKS - Configuration Services
 # 114 services répartis sur 10 tiers (T1-T10)
 # Chaque service a une ou plusieurs versions qui se débloquent progressivement
 # baseYield en K/s, deployCost en K, deployTime en secondes
